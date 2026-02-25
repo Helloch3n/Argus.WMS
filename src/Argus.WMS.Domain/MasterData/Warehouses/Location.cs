@@ -37,7 +37,7 @@ namespace Argus.WMS.MasterData.Warehouses
         {
         }
 
-        public Location(
+        internal Location(
             Guid id,
             Guid warehouseId,
             Guid zoneId,

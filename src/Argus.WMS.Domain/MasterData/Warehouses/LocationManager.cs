@@ -38,9 +38,19 @@ namespace Argus.WMS.MasterData.Warehouses
             bool allowMixedProducts = true,
             bool allowMixedBatches = true)
         {
-            await _warehouseRepository.GetAsync(warehouseId);
+            // 1. 校验仓库是否存在
+            var warehouse = await _warehouseRepository.GetAsync(warehouseId);
+            if (warehouse == null)
+            {
+                throw new BusinessException("WMS:WarehouseNotFound").WithData("WarehouseId", warehouseId);
+            }
 
+            // 2. 校验库区是否存在，并且是否属于该仓库 (解决逻辑泄露核心点)
             var zone = await _zoneRepository.GetAsync(zoneId);
+            if (zone == null)
+            {
+                throw new BusinessException("WMS:ZoneNotFound").WithData("ZoneId", zoneId);
+            }
             if (zone.WarehouseId != warehouseId)
             {
                 throw new BusinessException("WMS:ZoneNotBelongToWarehouse")
@@ -48,6 +58,7 @@ namespace Argus.WMS.MasterData.Warehouses
                     .WithData("WarehouseId", warehouseId);
             }
 
+            // 3. 校验库位编码在仓库内是否唯一
             var existing = await _locationRepository.GetByCodeAsync(code);
             if (existing != null && existing.WarehouseId == warehouseId)
             {
@@ -56,6 +67,7 @@ namespace Argus.WMS.MasterData.Warehouses
                     .WithData("WarehouseId", warehouseId);
             }
 
+            // 4. 通过 internal 构造函数创建实体
             var location = new Location(
                 GuidGenerator.Create(),
                 warehouseId,
