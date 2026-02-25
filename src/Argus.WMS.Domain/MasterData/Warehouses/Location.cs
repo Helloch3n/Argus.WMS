@@ -1,0 +1,132 @@
+using System;
+using System.ComponentModel.DataAnnotations;
+using Volo.Abp.Domain.Entities.Auditing;
+
+namespace Argus.WMS.MasterData.Warehouses
+{
+    public class Location : FullAuditedEntity<Guid>
+    {
+        public string Code { get; private set; }
+        public string Aisle { get; private set; }
+        public string Rack { get; private set; }
+        public string Level { get; private set; }
+        public string Bin { get; private set; }
+        public Guid WarehouseId { get; private set; }
+
+        // --- 物理极限限制 ---
+        public decimal MaxWeight { get; private set; }
+        public decimal MaxVolume { get; private set; }
+        public int MaxReelCount { get; private set; }
+
+        //[ConcurrencyCheck]
+        public LocationStatus Status { get; private set; }
+        public LocationType Type { get; private set; }
+
+        /// <summary>
+        /// 是否允许混放不同产品
+        /// </summary>
+        public bool AllowMixedProducts { get; private set; }
+
+        /// <summary>
+        /// 是否允许混放不同批次
+        /// </summary>
+        public bool AllowMixedBatches { get; private set; }
+
+        public Guid ZoneId { get; private set; }
+
+        private Location()
+        {
+        }
+
+        public Location(
+            Guid id,
+            Guid zoneId,
+            string code,
+            string aisle,
+            string rack,
+            string level,
+            string bin,
+            decimal maxWeight,
+            decimal maxVolume,
+            Guid warehouseId,
+            int maxReelCount
+            ) : base(id)
+        {
+            ZoneId = zoneId;
+            Code = code;
+            Aisle = aisle;
+            Rack = rack;
+            Level = level;
+            Bin = bin;
+            MaxWeight = maxWeight;
+            MaxVolume = maxVolume;
+            Status = LocationStatus.Idle;
+            WarehouseId = warehouseId;
+            AllowMixedProducts = true;
+            AllowMixedBatches = true;
+            MaxReelCount = maxReelCount; // 默认只能放一个线盘
+        }
+
+        public void Update(
+            Guid zoneId,
+            string code,
+            string aisle,
+            string rack,
+            string level,
+            string bin,
+            decimal maxWeight,
+            decimal maxVolume,
+            int maxReelCount,
+            Guid warehouseId,
+            LocationType type,
+            LocationStatus status,
+            bool allowMixedProducts,
+            bool allowMixedBatches)
+        {
+            ZoneId = zoneId;
+            Code = code;
+            Aisle = aisle;
+            Rack = rack;
+            Level = level;
+            Bin = bin;
+            MaxWeight = maxWeight;
+            MaxVolume = maxVolume;
+            MaxReelCount = maxReelCount;
+            WarehouseId = warehouseId;
+            Type = type;
+            Status = status;
+            AllowMixedProducts = allowMixedProducts;
+            AllowMixedBatches = allowMixedBatches;
+        }
+
+        // 设置物理坐标
+        public void SetCoordinates(string aisle, string rack, string level, string bin)
+        {
+            Aisle = aisle;
+            Rack = rack;
+            Level = level;
+            Bin = bin;
+        }
+
+        // 设置承重与容量限制
+        public void SetConstraints(decimal maxWeight, decimal maxVolume, int maxReelCount)
+        {
+            MaxWeight = maxWeight;
+            MaxVolume = maxVolume;
+            MaxReelCount = maxReelCount;
+        }
+
+        // 修改允许混放的规则
+        public void SetMixRules(bool allowMixedProducts, bool allowMixedBatches)
+        {
+            AllowMixedProducts = allowMixedProducts;
+            AllowMixedBatches = allowMixedBatches;
+        }
+
+        // 改变库位状态 (由入库/上架/出库服务调用)
+        public void ChangeStatus(LocationStatus newStatus)
+        {
+            Status = newStatus;
+        }
+    }
+}

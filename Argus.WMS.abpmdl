@@ -1,0 +1,113 @@
+{
+  "template": "app",
+  "imports": {
+    "Volo.Abp.LeptonXLiteTheme": {
+      "version": "5.0.1",
+      "isInstalled": true,
+      "creationTime": "01/30/2026 01:41:04 +00:00"
+    },
+    "Volo.Abp.Account": {
+      "version": "10.0.1",
+      "isInstalled": true,
+      "creationTime": "01/30/2026 01:41:04 +00:00"
+    },
+    "Volo.Abp.OpenIddict": {
+      "version": "10.0.1",
+      "isInstalled": true,
+      "creationTime": "01/30/2026 01:41:04 +00:00"
+    },
+    "Volo.Abp.Identity": {
+      "version": "10.0.1",
+      "isInstalled": true,
+      "creationTime": "01/30/2026 01:41:04 +00:00"
+    },
+    "Volo.Abp.TenantManagement": {
+      "version": "10.0.1",
+      "isInstalled": true,
+      "creationTime": "01/30/2026 01:41:04 +00:00"
+    },
+    "Volo.Abp.SettingManagement": {
+      "version": "10.0.1",
+      "isInstalled": true,
+      "creationTime": "01/30/2026 01:41:04 +00:00"
+    },
+    "Volo.Abp.PermissionManagement": {
+      "version": "10.0.1",
+      "isInstalled": true,
+      "creationTime": "01/30/2026 01:41:04 +00:00"
+    },
+    "Volo.Abp.FeatureManagement": {
+      "version": "10.0.1",
+      "isInstalled": true,
+      "creationTime": "01/30/2026 01:41:04 +00:00"
+    }
+  },
+  "folders": {
+    "items": {
+      "src": {},
+      "test": {}
+    }
+  },
+  "packages": {
+    "Argus.WMS.Application": {
+      "path": "src/Argus.WMS.Application/Argus.WMS.Application.abppkg",
+      "folder": "src"
+    },
+    "Argus.WMS.Application.Tests": {
+      "path": "test/Argus.WMS.Application.Tests/Argus.WMS.Application.Tests.abppkg",
+      "folder": "test"
+    },
+    "Argus.WMS.Domain.Shared": {
+      "path": "src/Argus.WMS.Domain.Shared/Argus.WMS.Domain.Shared.abppkg",
+      "folder": "src"
+    },
+    "Argus.WMS.Application.Contracts": {
+      "path": "src/Argus.WMS.Application.Contracts/Argus.WMS.Application.Contracts.abppkg",
+      "folder": "src"
+    },
+    "Argus.WMS.HttpApi": {
+      "path": "src/Argus.WMS.HttpApi/Argus.WMS.HttpApi.abppkg",
+      "folder": "src"
+    },
+    "Argus.WMS.HttpApi.Client": {
+      "path": "src/Argus.WMS.HttpApi.Client/Argus.WMS.HttpApi.Client.abppkg",
+      "folder": "src"
+    },
+    "Argus.WMS.Web": {
+      "path": "src/Argus.WMS.Web/Argus.WMS.Web.abppkg",
+      "folder": "src"
+    },
+    "Argus.WMS.Web.Tests": {
+      "path": "test/Argus.WMS.Web.Tests/Argus.WMS.Web.Tests.abppkg",
+      "folder": "test"
+    },
+    "Argus.WMS.EntityFrameworkCore.Tests": {
+      "path": "test/Argus.WMS.EntityFrameworkCore.Tests/Argus.WMS.EntityFrameworkCore.Tests.abppkg",
+      "folder": "test"
+    },
+    "Argus.WMS.EntityFrameworkCore": {
+      "path": "src/Argus.WMS.EntityFrameworkCore/Argus.WMS.EntityFrameworkCore.abppkg",
+      "folder": "src"
+    },
+    "Argus.WMS.TestBase": {
+      "path": "test/Argus.WMS.TestBase/Argus.WMS.TestBase.abppkg",
+      "folder": "test"
+    },
+    "Argus.WMS.Domain.Tests": {
+      "path": "test/Argus.WMS.Domain.Tests/Argus.WMS.Domain.Tests.abppkg",
+      "folder": "test"
+    },
+    "Argus.WMS.HttpApi.Client.ConsoleTestApp": {
+      "path": "test/Argus.WMS.HttpApi.Client.ConsoleTestApp/Argus.WMS.HttpApi.Client.ConsoleTestApp.abppkg",
+      "folder": "test"
+    },
+    "Argus.WMS.DbMigrator": {
+      "path": "src/Argus.WMS.DbMigrator/Argus.WMS.DbMigrator.abppkg",
+      "folder": "src"
+    },
+    "Argus.WMS.Domain": {
+      "path": "src/Argus.WMS.Domain/Argus.WMS.Domain.abppkg",
+      "folder": "src"
+    }
+  }
+}

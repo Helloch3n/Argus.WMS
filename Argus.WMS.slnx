@@ -1,0 +1,24 @@
+<Solution>
+    <Configurations>
+        <Platform Name="Any CPU" />
+    </Configurations>
+    <Folder Name="/src/">
+        <Project Path="src/Argus.WMS.Domain/Argus.WMS.Domain.csproj" />
+        <Project Path="src/Argus.WMS.Application/Argus.WMS.Application.csproj" />
+        <Project Path="src/Argus.WMS.EntityFrameworkCore/Argus.WMS.EntityFrameworkCore.csproj" />
+        <Project Path="src/Argus.WMS.Web/Argus.WMS.Web.csproj" />
+        <Project Path="src/Argus.WMS.Domain.Shared/Argus.WMS.Domain.Shared.csproj" />
+        <Project Path="src/Argus.WMS.Application.Contracts/Argus.WMS.Application.Contracts.csproj" />
+        <Project Path="src/Argus.WMS.HttpApi/Argus.WMS.HttpApi.csproj" />
+        <Project Path="src/Argus.WMS.HttpApi.Client/Argus.WMS.HttpApi.Client.csproj" />
+        <Project Path="src/Argus.WMS.DbMigrator/Argus.WMS.DbMigrator.csproj" />
+    </Folder>
+    <Folder Name="/test/">
+        <Project Path="test/Argus.WMS.Application.Tests/Argus.WMS.Application.Tests.csproj" />
+        <Project Path="test/Argus.WMS.Web.Tests/Argus.WMS.Web.Tests.csproj" />
+        <Project Path="test/Argus.WMS.EntityFrameworkCore.Tests/Argus.WMS.EntityFrameworkCore.Tests.csproj" />
+        <Project Path="test/Argus.WMS.TestBase/Argus.WMS.TestBase.csproj" />
+        <Project Path="test/Argus.WMS.Domain.Tests/Argus.WMS.Domain.Tests.csproj" />
+        <Project Path="test/Argus.WMS.HttpApi.Client.ConsoleTestApp/Argus.WMS.HttpApi.Client.ConsoleTestApp.csproj" />
+    </Folder>
+</Solution>

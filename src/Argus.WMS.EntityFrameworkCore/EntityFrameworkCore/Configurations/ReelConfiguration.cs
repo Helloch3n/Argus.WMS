@@ -1,0 +1,44 @@
+using Argus.WMS.MasterData.Reels;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Volo.Abp.EntityFrameworkCore.Modeling;
+
+namespace Argus.WMS.EntityFrameworkCore.Configurations
+{
+    public class ReelConfiguration : IEntityTypeConfiguration<Reel>
+    {
+        public void Configure(EntityTypeBuilder<Reel> builder)
+        {
+            builder.ToTable("AppReels");
+
+            builder.ConfigureByConvention();
+
+            builder.Property(x => x.ReelNo)
+                .IsRequired()
+                .HasMaxLength(50);
+
+            builder.Property(x => x.Name)
+                .IsRequired()
+                .HasMaxLength(200);
+
+            builder.Property(x => x.SelfWeight)
+                .HasPrecision(18, 4);
+
+            builder.Property(x => x.MaxWeight)
+                .HasPrecision(18, 2);
+
+            builder.Property(x => x.Status)
+                .HasConversion<int>();
+
+            builder.Property(x => x.IsLocked)
+                .HasDefaultValue(false);
+
+            builder.HasIndex(x => x.ReelNo)
+                .IsUnique();
+
+            builder.HasOne(x => x.CurrentLocation)
+                .WithMany()
+                .HasForeignKey(x => x.CurrentLocationId);
+        }
+    }
+}
