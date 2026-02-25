@@ -28,9 +28,8 @@ namespace Argus.WMS.MasterData.Warehouses
             ZoneType = zoneType;
         }
 
-        public void Update(Guid warehouseId, string code, string name, ZoneType zoneType)
+        public void Update(string code, string name, ZoneType zoneType)
         {
-            WarehouseId = warehouseId;
             Code = code;
             Name = name;
             ZoneType = zoneType;

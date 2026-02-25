@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Argus.WMS.MasterData.Warehouses.Dtos;
@@ -12,10 +11,14 @@ namespace Argus.WMS.MasterData.Warehouses
     public class LocationAppService : ApplicationService, ILocationAppService
     {
         private readonly IRepository<Location, Guid> _locationRepository;
+        private readonly LocationManager _locationManager;
 
-        public LocationAppService(IRepository<Location, Guid> locationRepository)
+        public LocationAppService(
+            IRepository<Location, Guid> locationRepository,
+            LocationManager locationManager)
         {
             _locationRepository = locationRepository;
+            _locationManager = locationManager;
         }
 
         public async Task<LocationDto> GetAsync(Guid id)
@@ -33,21 +36,8 @@ namespace Argus.WMS.MasterData.Warehouses
 
         public async Task<LocationDto> CreateAsync(CreateUpdateLocationDto input)
         {
-            var entity = new Location(
-                GuidGenerator.Create(),
-                input.ZoneId,
-                input.Code,
-                input.Aisle,
-                input.Rack,
-                input.Level,
-                input.Bin,
-                input.MaxWeight,
-                input.MaxVolume,
+            var entity = await _locationManager.CreateAsync(
                 input.WarehouseId,
-                input.MaxReelCount
-                );
-
-            entity.Update(
                 input.ZoneId,
                 input.Code,
                 input.Aisle,
@@ -57,13 +47,9 @@ namespace Argus.WMS.MasterData.Warehouses
                 input.MaxWeight,
                 input.MaxVolume,
                 input.MaxReelCount,
-                input.WarehouseId,
                 input.Type,
-                input.Status,
                 input.AllowMixedProducts,
                 input.AllowMixedBatches);
-
-            await _locationRepository.InsertAsync(entity);
 
             return ObjectMapper.Map<Location, LocationDto>(entity);
         }
@@ -72,8 +58,7 @@ namespace Argus.WMS.MasterData.Warehouses
         {
             var entity = await _locationRepository.GetAsync(id);
 
-            entity.Update(
-                input.ZoneId,
+            entity.UpdateBasicInfo(
                 input.Code,
                 input.Aisle,
                 input.Rack,
@@ -82,9 +67,7 @@ namespace Argus.WMS.MasterData.Warehouses
                 input.MaxWeight,
                 input.MaxVolume,
                 input.MaxReelCount,
-                input.WarehouseId,
                 input.Type,
-                input.Status,
                 input.AllowMixedProducts,
                 input.AllowMixedBatches);
 
@@ -100,31 +83,12 @@ namespace Argus.WMS.MasterData.Warehouses
 
         public async Task BatchCreateAsync(BatchCreateLocationDto input)
         {
-            var locations = new List<Location>();
-
-            for (var rack = 1; rack <= input.RackCount; rack++)
-            {
-                for (var level = 1; level <= input.LevelCount; level++)
-                {
-                    var code = $"{input.AislePrefix}-{rack:00}-{level:00}";
-                    var location = new Location(
-                        GuidGenerator.Create(),
-                        input.ZoneId,
-                        code,
-                        input.AislePrefix,
-                        rack.ToString("00"),
-                        level.ToString("00"),
-                        string.Empty,
-                        0m,
-                        0m,
-                        input.WarehouseId,
-                        (int)LocationStatus.Idle);
-
-                    locations.Add(location);
-                }
-            }
-
-            await _locationRepository.InsertManyAsync(locations, autoSave: true);
+            await _locationManager.BatchCreateAsync(
+                input.WarehouseId,
+                input.ZoneId,
+                input.AislePrefix,
+                input.RackCount,
+                input.LevelCount);
         }
     }
 }

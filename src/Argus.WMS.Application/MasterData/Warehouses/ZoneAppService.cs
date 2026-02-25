@@ -13,11 +13,16 @@ namespace Argus.WMS.MasterData.Warehouses
     {
         private readonly IRepository<Zone, Guid> _zoneRepository;
         private readonly ILocationRepository _locationRepository;
+        private readonly ZoneManager _zoneManager;
 
-        public ZoneAppService(IRepository<Zone, Guid> zoneRepository, ILocationRepository locationRepository)
+        public ZoneAppService(
+            IRepository<Zone, Guid> zoneRepository,
+            ILocationRepository locationRepository,
+            ZoneManager zoneManager)
         {
             _zoneRepository = zoneRepository;
             _locationRepository = locationRepository;
+            _zoneManager = zoneManager;
         }
 
         public async Task<ZoneDto> GetAsync(Guid id)
@@ -35,14 +40,11 @@ namespace Argus.WMS.MasterData.Warehouses
 
         public async Task<ZoneDto> CreateAsync(CreateUpdateZoneDto input)
         {
-            var entity = new Zone(
-                GuidGenerator.Create(),
+            var entity = await _zoneManager.CreateAsync(
                 input.WarehouseId,
                 input.Code,
                 input.Name,
                 input.ZoneType);
-
-            await _zoneRepository.InsertAsync(entity);
 
             return ObjectMapper.Map<Zone, ZoneDto>(entity);
         }
@@ -51,7 +53,7 @@ namespace Argus.WMS.MasterData.Warehouses
         {
             var entity = await _zoneRepository.GetAsync(id);
 
-            entity.Update(input.WarehouseId, input.Code, input.Name, input.ZoneType);
+            entity.Update(input.Code, input.Name, input.ZoneType);
 
             await _zoneRepository.UpdateAsync(entity);
 

@@ -15,7 +15,6 @@ namespace Argus.WMS.MasterData.Warehouses.Dtos
         public decimal MaxVolume { get; set; }
         public int MaxReelCount { get; set; }
         public LocationType Type { get; set; }
-        public LocationStatus Status { get; set; }
         public bool AllowMixedProducts { get; set; }
         public bool AllowMixedBatches { get; set; }
     }

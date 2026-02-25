@@ -17,6 +17,7 @@ namespace Argus.WMS.MasterData.Warehouses
         public decimal MaxVolume { get; private set; }
         public int MaxReelCount { get; private set; }
 
+        [ConcurrencyCheck]
         public LocationStatus Status { get; private set; }
         public LocationType Type { get; private set; }
 
@@ -38,34 +39,7 @@ namespace Argus.WMS.MasterData.Warehouses
 
         public Location(
             Guid id,
-            Guid zoneId,
-            string code,
-            string aisle,
-            string rack,
-            string level,
-            string bin,
-            decimal maxWeight,
-            decimal maxVolume,
             Guid warehouseId,
-            int maxReelCount
-            ) : base(id)
-        {
-            ZoneId = zoneId;
-            Code = code;
-            Aisle = aisle;
-            Rack = rack;
-            Level = level;
-            Bin = bin;
-            MaxWeight = maxWeight;
-            MaxVolume = maxVolume;
-            Status = LocationStatus.Idle;
-            WarehouseId = warehouseId;
-            AllowMixedProducts = true;
-            AllowMixedBatches = true;
-            MaxReelCount = maxReelCount;
-        }
-
-        public void Update(
             Guid zoneId,
             string code,
             string aisle,
@@ -75,12 +49,11 @@ namespace Argus.WMS.MasterData.Warehouses
             decimal maxWeight,
             decimal maxVolume,
             int maxReelCount,
-            Guid warehouseId,
-            LocationType type,
-            LocationStatus status,
-            bool allowMixedProducts,
-            bool allowMixedBatches)
+            LocationType type = LocationType.Storage,
+            bool allowMixedProducts = true,
+            bool allowMixedBatches = true) : base(id)
         {
+            WarehouseId = warehouseId;
             ZoneId = zoneId;
             Code = code;
             Aisle = aisle;
@@ -90,9 +63,37 @@ namespace Argus.WMS.MasterData.Warehouses
             MaxWeight = maxWeight;
             MaxVolume = maxVolume;
             MaxReelCount = maxReelCount;
-            WarehouseId = warehouseId;
             Type = type;
-            Status = status;
+            Status = LocationStatus.Idle;
+            AllowMixedProducts = allowMixedProducts;
+            AllowMixedBatches = allowMixedBatches;
+        }
+
+        /// <summary>
+        /// 更新库位基本信息（不含归属关系 WarehouseId/ZoneId 和状态 Status）
+        /// </summary>
+        public void UpdateBasicInfo(
+            string code,
+            string aisle,
+            string rack,
+            string level,
+            string bin,
+            decimal maxWeight,
+            decimal maxVolume,
+            int maxReelCount,
+            LocationType type,
+            bool allowMixedProducts,
+            bool allowMixedBatches)
+        {
+            Code = code;
+            Aisle = aisle;
+            Rack = rack;
+            Level = level;
+            Bin = bin;
+            MaxWeight = maxWeight;
+            MaxVolume = maxVolume;
+            MaxReelCount = maxReelCount;
+            Type = type;
             AllowMixedProducts = allowMixedProducts;
             AllowMixedBatches = allowMixedBatches;
         }
