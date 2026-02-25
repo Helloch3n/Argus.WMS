@@ -18,9 +18,10 @@ namespace Argus.WMS.MasterData.Reels
         public bool IsLocked { get; private set; }
         public Guid? CurrentLocationId { get; private set; }
         public Location CurrentLocation { get; private set; }
-        public List<Inventory> Inventorys { get; private set; }
+        private readonly List<Inventory> _inventorys = new();
+        public IReadOnlyCollection<Inventory> Inventorys => _inventorys;
 
-        private Reel()
+        protected Reel()
         {
         }
 

@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Argus.WMS.MasterData.Reels;
 using Argus.WMS.MasterData.Warehouses;
@@ -11,13 +10,13 @@ namespace Argus.WMS.Putaway
 {
     public class PutawayManager : DomainService
     {
-        private readonly IRepository<Reel, Guid> _reelRepository;
-        private readonly IRepository<Location, Guid> _locationRepository;
+        private readonly IReelRepository _reelRepository;
+        private readonly ILocationRepository _locationRepository;
         private readonly IRepository<PutawayTask, Guid> _putawayTaskRepository;
 
         public PutawayManager(
-            IRepository<Reel, Guid> reelRepository,
-            IRepository<Location, Guid> locationRepository,
+            IReelRepository reelRepository,
+            ILocationRepository locationRepository,
             IRepository<PutawayTask, Guid> putawayTaskRepository)
         {
             _reelRepository = reelRepository;
@@ -27,8 +26,7 @@ namespace Argus.WMS.Putaway
 
         public async Task<PutawayTask> CreateTaskAsync(string reelNo)
         {
-            var reelQuery = await _reelRepository.WithDetailsAsync(x => x.CurrentLocation);
-            var reel = await AsyncExecuter.FirstOrDefaultAsync(reelQuery.Where(x => x.ReelNo == reelNo));
+            var reel = await _reelRepository.GetByReelNoWithLocationAsync(reelNo);
             if (reel is null)
             {
                 throw new UserFriendlyException("盘具不存在");
@@ -83,8 +81,7 @@ namespace Argus.WMS.Putaway
 
         public async Task<PutawayTask> CreateTaskAsync(string reelNo, string? targetLocationCode = null)
         {
-            var reelQuery = await _reelRepository.WithDetailsAsync(x => x.CurrentLocation);
-            var reel = await AsyncExecuter.FirstOrDefaultAsync(reelQuery.Where(x => x.ReelNo == reelNo));
+            var reel = await _reelRepository.GetByReelNoWithLocationAsync(reelNo);
             if (reel is null)
             {
                 throw new UserFriendlyException("盘具不存在");
@@ -113,7 +110,7 @@ namespace Argus.WMS.Putaway
             Location? targetLocation = null;
             if (!string.IsNullOrWhiteSpace(targetLocationCode))
             {
-                targetLocation = await _locationRepository.FirstOrDefaultAsync(x => x.Code == targetLocationCode);
+                targetLocation = await _locationRepository.GetByCodeAsync(targetLocationCode);
                 if (targetLocation is null)
                 {
                     throw new UserFriendlyException("目标库位不存在");
@@ -154,7 +151,7 @@ namespace Argus.WMS.Putaway
                 throw new UserFriendlyException("盘具不存在");
             }
 
-            var targetLocation = await _locationRepository.FirstOrDefaultAsync(x => x.Code == targetLocationCode);
+            var targetLocation = await _locationRepository.GetByCodeAsync(targetLocationCode);
             if (targetLocation is null)
             {
                 throw new UserFriendlyException("目标库位不存在");

@@ -17,7 +17,7 @@ namespace Argus.WMS.Inbound
         public bool IsReceived { get; private set; }
         public decimal ActualQuantity { get; private set; }
         public string Unit { get; private set; }
-        // ÐÂÔö×Ö¶Î
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Ö¶ï¿½
         public Guid? ToWarehouseId { get; private set; }
         public string SN { get; private set; }
         public string? CraftVersion { get; private set; }
@@ -28,7 +28,7 @@ namespace Argus.WMS.Inbound
         public Reel Reel { get; private set; }
         public Product Product { get; private set; }
 
-        private ReceiptDetail()
+        protected ReceiptDetail()
         {
         }
 

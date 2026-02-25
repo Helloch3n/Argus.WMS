@@ -15,5 +15,7 @@ namespace Argus.WMS.MasterData.Reels
             int maxResultCount);
 
         Task<long> GetAvailableForPutawayCountAsync(string filter, Guid? warehouseId);
+
+        Task<Reel?> GetByReelNoWithLocationAsync(string reelNo);
     }
 }

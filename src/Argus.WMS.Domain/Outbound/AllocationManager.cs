@@ -3,39 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Argus.WMS.Inventorys;
-using Argus.WMS.MasterData.Reels;
 using Volo.Abp;
-using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Domain.Services;
 
 namespace Argus.WMS.Outbound
 {
     public class AllocationManager : DomainService
     {
-        private readonly IRepository<Inventory, Guid> _inventoryRepository;
+        private readonly IInventoryRepository _inventoryRepository;
 
-        public AllocationManager(IRepository<Inventory, Guid> inventoryRepository)
+        public AllocationManager(IInventoryRepository inventoryRepository)
         {
             _inventoryRepository = inventoryRepository;
         }
 
         public async Task<List<AllocationResult>> AllocateAsync(string productCode, decimal targetLength, int quantity)
         {
-            var query = await _inventoryRepository.WithDetailsAsync(x => x.Reel, x => x.Product);
-
-            var dbCandidates = query
-                .Where(x => x.Product.Code == productCode)
-                .Where(x => x.Reel.Status == ReelStatus.Occupied)
-                .Where(x => !x.Reel.IsLocked);
-
-            var allCandidates = await AsyncExecuter.ToListAsync(dbCandidates);
-
-            var validInventories = allCandidates
-                .GroupBy(x => x.ReelId)
-                .Select(g => g.OrderByDescending(x => x.Index).First())
-                .Where(x => x.AvailableQuantity >= targetLength)
-                .OrderBy(x => x.CreationTime)
-                .ToList();
+            var validInventories = await _inventoryRepository.GetAllocatableInventoriesAsync(productCode, targetLength);
 
             var results = new List<AllocationResult>();
 

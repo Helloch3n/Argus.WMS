@@ -3,6 +3,7 @@ using System;
 using Argus.WMS.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Volo.Abp.EntityFrameworkCore;
@@ -12,9 +13,11 @@ using Volo.Abp.EntityFrameworkCore;
 namespace Argus.WMS.Migrations
 {
     [DbContext(typeof(WMSDbContext))]
-    partial class WMSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260225091155_250002")]
+    partial class _250002
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -787,13 +790,6 @@ namespace Argus.WMS.Migrations
                         .HasColumnType("character varying(50)")
                         .HasComment("库位编码");
 
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("character varying(40)")
-                        .HasColumnName("ConcurrencyStamp");
-
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("CreationTime");
@@ -809,11 +805,6 @@ namespace Argus.WMS.Migrations
                     b.Property<DateTime?>("DeletionTime")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("DeletionTime");
-
-                    b.Property<string>("ExtraProperties")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("ExtraProperties");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -873,10 +864,6 @@ namespace Argus.WMS.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("WarehouseId");
-
-                    b.HasIndex("ZoneId");
-
                     b.HasIndex("ZoneId", "Code")
                         .IsUnique();
 
@@ -887,6 +874,12 @@ namespace Argus.WMS.Migrations
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasComment("地址");
 
                     b.Property<string>("Code")
                         .IsRequired()
@@ -936,6 +929,12 @@ namespace Argus.WMS.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("LastModifierId");
 
+                    b.Property<string>("Manager")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasComment("负责人");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -961,13 +960,6 @@ namespace Argus.WMS.Migrations
                         .HasColumnType("character varying(50)")
                         .HasComment("库区编码");
 
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("character varying(40)")
-                        .HasColumnName("ConcurrencyStamp");
-
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("CreationTime");
@@ -983,11 +975,6 @@ namespace Argus.WMS.Migrations
                     b.Property<DateTime?>("DeletionTime")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("DeletionTime");
-
-                    b.Property<string>("ExtraProperties")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("ExtraProperties");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -3239,6 +3226,24 @@ namespace Argus.WMS.Migrations
                     b.Navigation("CurrentLocation");
                 });
 
+            modelBuilder.Entity("Argus.WMS.MasterData.Warehouses.Location", b =>
+                {
+                    b.HasOne("Argus.WMS.MasterData.Warehouses.Zone", null)
+                        .WithMany("Locations")
+                        .HasForeignKey("ZoneId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Argus.WMS.MasterData.Warehouses.Zone", b =>
+                {
+                    b.HasOne("Argus.WMS.MasterData.Warehouses.Warehouse", null)
+                        .WithMany("Zones")
+                        .HasForeignKey("WarehouseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Argus.WMS.Outbound.OutboundOrderItem", b =>
                 {
                     b.HasOne("Argus.WMS.Outbound.OutboundOrder", null)
@@ -3407,6 +3412,16 @@ namespace Argus.WMS.Migrations
             modelBuilder.Entity("Argus.WMS.MasterData.Reels.Reel", b =>
                 {
                     b.Navigation("Inventorys");
+                });
+
+            modelBuilder.Entity("Argus.WMS.MasterData.Warehouses.Warehouse", b =>
+                {
+                    b.Navigation("Zones");
+                });
+
+            modelBuilder.Entity("Argus.WMS.MasterData.Warehouses.Zone", b =>
+                {
+                    b.Navigation("Locations");
                 });
 
             modelBuilder.Entity("Argus.WMS.Outbound.OutboundOrder", b =>

@@ -22,7 +22,7 @@ namespace Argus.WMS.Application.Contracts.Inbound.Dtos
         public string? BatchNo { get; set; }
         public string? Source_WO { get; set; }
 
-        // ÐÂÔö×Ö¶Î
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Ö¶ï¿½
         public string SN { get; set; }
         public string? CraftVersion { get; set; }
         public int Layer_Index { get; set; } = 1;

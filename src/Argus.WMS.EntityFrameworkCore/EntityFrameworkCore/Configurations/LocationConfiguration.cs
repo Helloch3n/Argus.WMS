@@ -61,6 +61,8 @@ namespace Argus.WMS.EntityFrameworkCore.Configurations
                 .HasComment("是否允许混放不同批次");
 
             builder.HasIndex(x => new { x.ZoneId, x.Code }).IsUnique();
+            builder.HasIndex(x => x.WarehouseId);
+            builder.HasIndex(x => x.ZoneId);
         }
     }
 }

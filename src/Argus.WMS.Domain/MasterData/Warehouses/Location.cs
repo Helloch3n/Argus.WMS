@@ -4,7 +4,7 @@ using Volo.Abp.Domain.Entities.Auditing;
 
 namespace Argus.WMS.MasterData.Warehouses
 {
-    public class Location : FullAuditedEntity<Guid>
+    public class Location : FullAuditedAggregateRoot<Guid>
     {
         public string Code { get; private set; }
         public string Aisle { get; private set; }
@@ -13,28 +13,26 @@ namespace Argus.WMS.MasterData.Warehouses
         public string Bin { get; private set; }
         public Guid WarehouseId { get; private set; }
 
-        // --- 物理极限限制 ---
         public decimal MaxWeight { get; private set; }
         public decimal MaxVolume { get; private set; }
         public int MaxReelCount { get; private set; }
 
-        //[ConcurrencyCheck]
         public LocationStatus Status { get; private set; }
         public LocationType Type { get; private set; }
 
         /// <summary>
-        /// 是否允许混放不同产品
+        /// 鏄惁鍏佽娣锋斁涓嶅悓鐗╂枡
         /// </summary>
         public bool AllowMixedProducts { get; private set; }
 
         /// <summary>
-        /// 是否允许混放不同批次
+        /// 鏄惁鍏佽娣锋斁涓嶅悓鎵规
         /// </summary>
         public bool AllowMixedBatches { get; private set; }
 
         public Guid ZoneId { get; private set; }
 
-        private Location()
+        protected Location()
         {
         }
 
@@ -64,7 +62,7 @@ namespace Argus.WMS.MasterData.Warehouses
             WarehouseId = warehouseId;
             AllowMixedProducts = true;
             AllowMixedBatches = true;
-            MaxReelCount = maxReelCount; // 默认只能放一个线盘
+            MaxReelCount = maxReelCount;
         }
 
         public void Update(
@@ -99,7 +97,6 @@ namespace Argus.WMS.MasterData.Warehouses
             AllowMixedBatches = allowMixedBatches;
         }
 
-        // 设置物理坐标
         public void SetCoordinates(string aisle, string rack, string level, string bin)
         {
             Aisle = aisle;
@@ -108,7 +105,6 @@ namespace Argus.WMS.MasterData.Warehouses
             Bin = bin;
         }
 
-        // 设置承重与容量限制
         public void SetConstraints(decimal maxWeight, decimal maxVolume, int maxReelCount)
         {
             MaxWeight = maxWeight;
@@ -116,14 +112,12 @@ namespace Argus.WMS.MasterData.Warehouses
             MaxReelCount = maxReelCount;
         }
 
-        // 修改允许混放的规则
         public void SetMixRules(bool allowMixedProducts, bool allowMixedBatches)
         {
             AllowMixedProducts = allowMixedProducts;
             AllowMixedBatches = allowMixedBatches;
         }
 
-        // 改变库位状态 (由入库/上架/出库服务调用)
         public void ChangeStatus(LocationStatus newStatus)
         {
             Status = newStatus;

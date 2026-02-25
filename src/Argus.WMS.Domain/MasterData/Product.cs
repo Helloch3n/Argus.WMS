@@ -9,34 +9,28 @@ namespace Argus.WMS.MasterData
         public string Code { get; private set; }
         public string Name { get; private set; }
         public string Unit { get; private set; }
-
-        public decimal Length { get; private set; }
-        public decimal Width { get; private set; }
-        public decimal Height { get; private set; }
-        public decimal Volume => Length * Width * Height;
-        public decimal Weight { get; private set; }
-
+        public string AuxUnit { get; private set; }
+        public decimal ConversionRate { get; private set; }
         public bool IsBatchManagementEnabled { get; private set; }
         public int? ShelfLifeDays { get; private set; }
 
-        private Product() { }
+        protected Product() { }
 
         public Product(
             Guid id,
             string code,
             string name,
             string unit,
-            decimal length,
-            decimal width,
-            decimal height,
-            decimal weight,
+            string auxUnit,
+            decimal conversionRate,
             bool isBatchManagementEnabled,
             int? shelfLifeDays) : base(id)
         {
             SetCode(code);
             SetName(name);
-            Unit = unit;
-            UpdateDimensions(length, width, height, weight);
+            SetUnit(unit);
+            SetAuxUnit(auxUnit);
+            SetConversionRate(conversionRate);
             SetBatchManagement(isBatchManagementEnabled, shelfLifeDays);
         }
 
@@ -50,22 +44,19 @@ namespace Argus.WMS.MasterData
             Name = Check.NotNullOrWhiteSpace(name, nameof(name));
         }
 
-        public void UpdateDimensions(decimal length, decimal width, decimal height, decimal weight)
+        public void SetUnit(string unit)
         {
-            if (length <= 0 || width <= 0 || height <= 0)
-            {
-                throw new UserFriendlyException("长、宽、高必须大于0。");
-            }
+            Unit = unit;
+        }
 
-            if (weight <= 0)
-            {
-                throw new UserFriendlyException("重量必须大于0。");
-            }
+        public void SetAuxUnit(string auxUnit)
+        {
+            AuxUnit = auxUnit;
+        }
 
-            Length = length;
-            Width = width;
-            Height = height;
-            Weight = weight;
+        public void SetConversionRate(decimal conversionRate)
+        {
+            ConversionRate = conversionRate;
         }
 
         public void SetBatchManagement(bool enabled, int? shelfLifeDays)

@@ -14,17 +14,11 @@ namespace Argus.WMS.MasterData.Dtos
 
         public string Unit { get; set; }
 
-        [Range(0, double.MaxValue)]
-        public decimal Length { get; set; }
+        [MaxLength(20)]
+        public string AuxUnit { get; set; }
 
         [Range(0, double.MaxValue)]
-        public decimal Width { get; set; }
-
-        [Range(0, double.MaxValue)]
-        public decimal Height { get; set; }
-
-        [Range(0, double.MaxValue)]
-        public decimal Weight { get; set; }
+        public decimal ConversionRate { get; set; }
 
         public bool IsBatchManagementEnabled { get; set; }
 

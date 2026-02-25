@@ -24,10 +24,8 @@ namespace Argus.WMS.MasterData
                 input.Code,
                 input.Name,
                 input.Unit,
-                input.Length,
-                input.Width,
-                input.Height,
-                input.Weight,
+                input.AuxUnit,
+                input.ConversionRate,
                 input.IsBatchManagementEnabled,
                 input.ShelfLifeDays);
 
@@ -42,6 +40,9 @@ namespace Argus.WMS.MasterData
 
             product.SetCode(input.Code);
             product.SetName(input.Name);
+            product.SetUnit(input.Unit);
+            product.SetAuxUnit(input.AuxUnit);
+            product.SetConversionRate(input.ConversionRate);
             product.SetBatchManagement(input.IsBatchManagementEnabled, input.ShelfLifeDays);
 
             await Repository.UpdateAsync(product);

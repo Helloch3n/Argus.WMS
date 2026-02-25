@@ -79,5 +79,13 @@ namespace Argus.WMS.MasterData.Reels
 
             return await query.LongCountAsync();
         }
+
+        public async Task<Reel?> GetByReelNoWithLocationAsync(string reelNo)
+        {
+            var queryable = await GetQueryableAsync();
+            return await queryable
+                .Include(x => x.CurrentLocation)
+                .FirstOrDefaultAsync(x => x.ReelNo == reelNo);
+        }
     }
 }

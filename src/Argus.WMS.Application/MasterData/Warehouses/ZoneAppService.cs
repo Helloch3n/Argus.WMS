@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Argus.WMS.MasterData.Warehouses.Dtos;
+using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
@@ -11,10 +12,12 @@ namespace Argus.WMS.MasterData.Warehouses
     public class ZoneAppService : ApplicationService, IZoneAppService
     {
         private readonly IRepository<Zone, Guid> _zoneRepository;
+        private readonly ILocationRepository _locationRepository;
 
-        public ZoneAppService(IRepository<Zone, Guid> zoneRepository)
+        public ZoneAppService(IRepository<Zone, Guid> zoneRepository, ILocationRepository locationRepository)
         {
             _zoneRepository = zoneRepository;
+            _locationRepository = locationRepository;
         }
 
         public async Task<ZoneDto> GetAsync(Guid id)
@@ -57,6 +60,14 @@ namespace Argus.WMS.MasterData.Warehouses
 
         public async Task DeleteAsync(Guid id)
         {
+            var hasLocations = await _locationRepository.AnyAsync(x => x.ZoneId == id);
+
+            if (hasLocations)
+            {
+                throw new BusinessException("Zone:HasLocations")
+                    .WithData("ZoneId", id);
+            }
+
             await _zoneRepository.DeleteAsync(id);
         }
     }

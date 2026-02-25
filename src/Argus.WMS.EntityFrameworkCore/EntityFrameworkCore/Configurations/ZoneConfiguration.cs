@@ -26,10 +26,7 @@ namespace Argus.WMS.EntityFrameworkCore.Configurations
             builder.Property(x => x.ZoneType)
                 .HasComment("¿âÇøÀàÐÍ");
 
-            builder.HasMany(x => x.Locations)
-                .WithOne()
-                .HasForeignKey(x => x.ZoneId)
-                .IsRequired();
+            builder.HasIndex(x => x.WarehouseId);
         }
     }
 }

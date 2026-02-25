@@ -30,7 +30,7 @@ namespace Argus.WMS.Inbound
         public async Task<ReceiptDto> GetAsync(Guid id)
         {
             var receipt = await _receiptRepository.GetWithDetailsAsync(id)
-                ?? throw new UserFriendlyException("收货单不存在");
+                ?? throw new UserFriendlyException("鏀惰揣鍗曚笉瀛樺湪");
             return _receiptMapper.Map(receipt);
         }
 
@@ -61,7 +61,7 @@ namespace Argus.WMS.Inbound
 
             foreach (var detail in input.Details)
             {
-                receipt.Details.Add(new ReceiptDetail(
+                receipt.AddDetail(new ReceiptDetail(
                     GuidGenerator.Create(),
                     receipt.Id,
                     detail.ReelId,
@@ -93,7 +93,7 @@ namespace Argus.WMS.Inbound
         public async Task ExecuteByReelAsync(ExecuteReceiptByReelInput input)
         {
             var receipt = await _receiptRepository.GetWithDetailsAsync(input.ReceiptId)
-                ?? throw new UserFriendlyException("收货单不存在");
+                ?? throw new UserFriendlyException("鏀惰揣鍗曚笉瀛樺湪");
 
             var pendingDetails = receipt.Details
                 .Where(x => x.ReelId == input.ReelId && !x.IsReceived)
@@ -101,7 +101,7 @@ namespace Argus.WMS.Inbound
 
             if (pendingDetails.Count == 0)
             {
-                throw new UserFriendlyException("该载具下没有待收货明细，或已全部收货");
+                throw new UserFriendlyException("璇ヨ浇鍏蜂笅娌℃湁寰呮敹璐ф槑缁嗭紝鎴栧凡鍏ㄩ儴鏀惰揣");
             }
             foreach (var detail in pendingDetails)
             {

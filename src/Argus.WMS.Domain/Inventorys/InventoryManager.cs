@@ -35,8 +35,8 @@ namespace Argus.WMS.Inventorys
             InventoryStatus status = InventoryStatus.Good)
         {
 
-            // SN 全局唯一校验
-            var snExists = await _inventoryRepository.AnyAsync(x => x.SN == sn);
+            // SN 全锟斤拷唯一校锟斤拷
+            var snExists = await _inventoryRepository.IsSnExistsAsync(sn);
             if (snExists)
             {
                 throw new BusinessException("WMS:DuplicateSN")

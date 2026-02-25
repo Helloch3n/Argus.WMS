@@ -12,11 +12,11 @@ namespace Argus.WMS.Inbound
         public ReceiptStatus Status { get; private set; }
         public Guid WarehouseId { get; private set; }
 
-        public List<ReceiptDetail> Details { get; private set; }
+        private readonly List<ReceiptDetail> _details = new();
+        public IReadOnlyCollection<ReceiptDetail> Details => _details;
 
-        private Receipt()
+        protected Receipt()
         {
-            Details = new List<ReceiptDetail>();
         }
 
         public Receipt(
@@ -29,7 +29,6 @@ namespace Argus.WMS.Inbound
             Type = type;
             Status = status;
             WarehouseId = warehouseId;
-            Details = new List<ReceiptDetail>();
             BillNo = billNo;
         }
 
@@ -41,6 +40,11 @@ namespace Argus.WMS.Inbound
         public void SetBillNo(string billNo)
         {
             BillNo = Check.NotNullOrWhiteSpace(billNo, nameof(billNo));
+        }
+
+        public void AddDetail(ReceiptDetail detail)
+        {
+            _details.Add(detail);
         }
     }
 }

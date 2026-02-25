@@ -12,7 +12,7 @@ namespace Argus.WMS.Putaway
         public PutawayTaskStatus Status { get; private set; }
         public Guid? AssignedUserId { get; private set; }
 
-        private PutawayTask()
+        protected PutawayTask()
         {
         }
 

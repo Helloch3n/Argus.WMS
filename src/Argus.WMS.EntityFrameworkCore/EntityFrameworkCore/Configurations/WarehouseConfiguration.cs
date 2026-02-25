@@ -23,20 +23,7 @@ namespace Argus.WMS.EntityFrameworkCore.Configurations
                 .HasMaxLength(200)
                 .HasComment("仓库名称");
 
-            builder.Property(x => x.Address)
-                .HasMaxLength(500)
-                .HasComment("地址");
-
-            builder.Property(x => x.Manager)
-                .HasMaxLength(50)
-                .HasComment("负责人");
-
             builder.HasIndex(x => x.Code).IsUnique();
-
-            builder.HasMany(x => x.Zones)
-                .WithOne()
-                .HasForeignKey(x => x.WarehouseId)
-                .IsRequired();
         }
     }
 }

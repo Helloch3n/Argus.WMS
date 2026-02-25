@@ -11,11 +11,11 @@ namespace Argus.WMS.Outbound
         public string? SourceOrderNo { get; private set; }
         public string? CustomerName { get; private set; }
         public OutboundOrderStatus Status { get; private set; }
-        public ICollection<OutboundOrderItem> Items { get; private set; }
+        private readonly List<OutboundOrderItem> _items = new();
+        public IReadOnlyCollection<OutboundOrderItem> Items => _items;
 
-        private OutboundOrder()
+        protected OutboundOrder()
         {
-            Items = new List<OutboundOrderItem>();
         }
 
         public OutboundOrder(
@@ -29,12 +29,11 @@ namespace Argus.WMS.Outbound
             SourceOrderNo = sourceOrderNo;
             CustomerName = customerName;
             Status = OutboundOrderStatus.Created;
-            Items = new List<OutboundOrderItem>();
         }
 
         public void AddItem(Guid id, string productCode, decimal targetLength, int quantity)
         {
-            Items.Add(new OutboundOrderItem(id, Id, productCode, targetLength, quantity));
+            _items.Add(new OutboundOrderItem(id, Id, productCode, targetLength, quantity));
         }
 
         public void MarkAllocated()

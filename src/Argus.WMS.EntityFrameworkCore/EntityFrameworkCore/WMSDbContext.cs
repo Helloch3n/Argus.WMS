@@ -1,3 +1,4 @@
+using Argus.WMS.DataSync;
 using Argus.WMS.Inbound;
 using Argus.WMS.Inventorys;
 using Argus.WMS.MasterData;
@@ -36,6 +37,7 @@ public class WMSDbContext :
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
 
+    public DbSet<DataSyncTask> DataSyncTasks { get; set; }
     public DbSet<PutawayTask> PutawayTasks { get; set; }
     public DbSet<OutboundOrder> OutboundOrders { get; set; }
     public DbSet<OutboundOrderItem> OutboundOrderItems { get; set; }

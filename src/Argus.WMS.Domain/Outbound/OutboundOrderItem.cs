@@ -10,9 +10,9 @@ namespace Argus.WMS.Outbound
         public string ProductCode { get; private set; }
         public decimal TargetLength { get; private set; }
         public int Quantity { get; private set; }
-        public int AllocatedQuantity { get; internal set; }
+        public int AllocatedQuantity { get; private set; }
 
-        private OutboundOrderItem()
+        protected OutboundOrderItem()
         {
         }
 

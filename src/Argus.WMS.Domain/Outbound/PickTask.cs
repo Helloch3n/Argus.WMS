@@ -12,9 +12,9 @@ namespace Argus.WMS.Outbound
         public string ReelNo { get; private set; }
         public string? FromLocation { get; private set; }
         public string? ToLocation { get; private set; }
-        public PickTaskStatus Status { get; set; }
+        public PickTaskStatus Status { get;private set; }
 
-        private PickTask()
+        protected PickTask()
         {
         }
 

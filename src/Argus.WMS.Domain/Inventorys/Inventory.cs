@@ -12,7 +12,7 @@ namespace Argus.WMS.Inventorys
         public Guid ProductId { get; private set; }
         public decimal Quantity { get; private set; }
         public decimal AvailableQuantity => Quantity - LockedQuantity;
-        public decimal LockedQuantity { get; internal set; }
+        public decimal LockedQuantity { get; private set; }
         public string Unit { get; private set; }
         public decimal Weight { get; private set; }
         public string BatchNo { get; private set; }
@@ -26,7 +26,7 @@ namespace Argus.WMS.Inventorys
         public Product Product { get; private set; }
         public string? RelatedOrderNo { get; private set; }
 
-        private Inventory()
+        protected Inventory()
         {
         }
 
