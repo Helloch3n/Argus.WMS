@@ -31,7 +31,7 @@ namespace Argus.WMS.Application.Inventorys
             _reelRepository = reelRepository;
         }
 
-        public async Task<ListResultDto<InventoryDto>> GetListAsync(InventorySearchDto input)
+        public async Task<PagedResultDto<InventoryDto>> GetListAsync(InventorySearchDto input)
         {
             var query = await _inventoryRepository.WithDetailsAsync(x => x.Reel,
                 x => x.Reel.CurrentLocation, x => x.Product);
@@ -51,14 +51,17 @@ namespace Argus.WMS.Application.Inventorys
                 query = query.Where(x => x.Source_WO.Contains(input.Source_WO));
             }
 
+            var totalCount = await AsyncExecuter.CountAsync(query);
+
             query = query
                 .OrderBy(x => x.Reel.ReelNo)
-                .ThenByDescending(x => x.Index);
+                .ThenByDescending(x => x.Index)
+                .PageBy(input.SkipCount, input.MaxResultCount);
 
             var items = await AsyncExecuter.ToListAsync(query);
 
             var result = items.Select(_inventoryMapper.Map).ToList();
-            return new ListResultDto<InventoryDto>(result);
+            return new PagedResultDto<InventoryDto>(totalCount, result);
         }
 
         //public async Task<InventoryDto> ProductionReceiveAsync(ProductionReceiveInput input)

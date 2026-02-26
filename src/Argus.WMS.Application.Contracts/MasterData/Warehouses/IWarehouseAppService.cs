@@ -10,7 +10,7 @@ namespace Argus.WMS.MasterData.Warehouses
     {
         Task<WarehouseDto> GetAsync(Guid id);
         Task<WarehouseWithDetailsDto> GetWithDetailsAsync(Guid id);
-        Task<PagedResultDto<WarehouseDto>> GetListAsync(PagedAndSortedResultRequestDto input);
+        Task<PagedResultDto<WarehouseDto>> GetListAsync(WarehouseSearchDto input);
         Task<WarehouseDto> CreateAsync(CreateUpdateWarehouseDto input);
         Task<WarehouseDto> UpdateAsync(Guid id, CreateUpdateWarehouseDto input);
         Task DeleteAsync(Guid id);

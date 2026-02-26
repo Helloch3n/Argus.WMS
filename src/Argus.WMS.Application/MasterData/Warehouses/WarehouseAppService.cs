@@ -61,18 +61,34 @@ namespace Argus.WMS.MasterData.Warehouses
             };
         }
 
-        public async Task<PagedResultDto<WarehouseDto>> GetListAsync(PagedAndSortedResultRequestDto input)
+        public async Task<PagedResultDto<WarehouseDto>> GetListAsync(WarehouseSearchDto input)
         {
-            var totalCount = await _warehouseRepository.GetCountAsync();
-            var sorting = string.IsNullOrWhiteSpace(input.Sorting) ? "CreationTime DESC" : input.Sorting;
-            var entities = await _warehouseRepository.GetPagedListAsync(input.SkipCount, input.MaxResultCount, sorting);
+            var query = await _warehouseRepository.GetQueryableAsync();
+
+            if (!string.IsNullOrWhiteSpace(input.WarehouseCode))
+            {
+                query = query.Where(x => x.Code.Contains(input.WarehouseCode));
+            }
+
+            if (!string.IsNullOrWhiteSpace(input.WarehouseName))
+            {
+                query = query.Where(x => x.Name.Contains(input.WarehouseName));
+            }
+
+            var totalCount = await AsyncExecuter.CountAsync(query);
+
+            query = query
+                .OrderBy(x => x.Code)
+                .PageBy(input.SkipCount, input.MaxResultCount);
+
+            var entities = await AsyncExecuter.ToListAsync(query);
             var items = entities.Select(ObjectMapper.Map<Warehouse, WarehouseDto>).ToList();
             return new PagedResultDto<WarehouseDto>(totalCount, items);
         }
 
         public async Task<WarehouseDto> CreateAsync(CreateUpdateWarehouseDto input)
         {
-            var entity = new Warehouse(
+                var entity = new Warehouse(
                 GuidGenerator.Create(),
                 input.Code,
                 input.Name);

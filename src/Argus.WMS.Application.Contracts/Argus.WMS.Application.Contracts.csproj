@@ -18,6 +18,7 @@
     <Compile Include="MasterData\Locations\Dtos\BatchCreateLocationDto.cs" />
     <Compile Include="MasterData\Locations\Dtos\CreateUpdateLocationDto.cs" />
     <Compile Include="MasterData\Locations\Dtos\LocationDto.cs" />
+    <Compile Include="MasterData\Locations\Dtos\LocationSearchDto.cs" />
     <Compile Include="MasterData\Locations\ILocationAppService.cs" />
   </ItemGroup>
 

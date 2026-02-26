@@ -5,7 +5,7 @@ using Volo.Abp.Application.Services;
 
 namespace Argus.WMS.MasterData
 {
-    public interface IProductAppService : ICrudAppService<ProductDto, Guid, PagedAndSortedResultRequestDto, CreateUpdateProductDto>
+    public interface IProductAppService : ICrudAppService<ProductDto, Guid, ProductSearchDto, CreateUpdateProductDto>
     {
     }
 }

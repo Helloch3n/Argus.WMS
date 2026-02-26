@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using System.Linq;
 using Argus.WMS.MasterData.Dtos;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
@@ -12,7 +13,7 @@ namespace Argus.WMS.MasterData
             Supplier,
             SupplierDto,
             Guid,
-            PagedAndSortedResultRequestDto,
+            SupplierSearchDto,
             CreateUpdateSupplierDto>,
         ISupplierAppService
     {
@@ -49,6 +50,31 @@ namespace Argus.WMS.MasterData
             await Repository.UpdateAsync(supplier);
 
             return ObjectMapper.Map<Supplier, SupplierDto>(supplier);
+        }
+        public override async Task<PagedResultDto<SupplierDto>> GetListAsync(SupplierSearchDto input)
+        {
+            var queryable = await Repository.GetQueryableAsync();
+
+            if (!string.IsNullOrWhiteSpace(input.SupplierCode))
+            {
+                queryable = queryable.Where(x => x.Code == input.SupplierCode);
+            }
+
+            if (!string.IsNullOrWhiteSpace(input.SupplierName))
+            {
+                queryable = queryable.Where(x => x.Name.Contains(input.SupplierName));
+            }
+
+            var totalCount = await AsyncExecuter.CountAsync(queryable);
+
+            var items = await AsyncExecuter.ToListAsync(
+                queryable
+                    .OrderBy(x => x.Code)
+                    .PageBy(input.SkipCount, input.MaxResultCount));
+
+            var dtos = ObjectMapper.Map<System.Collections.Generic.List<Supplier>, System.Collections.Generic.List<SupplierDto>>(items);
+
+            return new PagedResultDto<SupplierDto>(totalCount, dtos);
         }
     }
 }

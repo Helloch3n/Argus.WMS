@@ -7,7 +7,7 @@ namespace Argus.WMS.Application.Contracts.Inventorys
 {
     public interface IInventoryAppService : IApplicationService
     {
-        Task<ListResultDto<InventoryDto>> GetListAsync(InventorySearchDto input);
+        Task<PagedResultDto<InventoryDto>> GetListAsync(InventorySearchDto input);
         //Task<InventoryDto> ProductionReceiveAsync(ProductionReceiveInput input);
     }
 }

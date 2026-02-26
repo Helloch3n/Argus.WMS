@@ -9,8 +9,8 @@ using Volo.Abp.Domain.Repositories;
 namespace Argus.WMS.MasterData
 {
     public class ProductAppService :
-        CrudAppService<Product, ProductDto, Guid, PagedAndSortedResultRequestDto, CreateUpdateProductDto>,
-        IProductAppService
+        CrudAppService<Product, ProductDto, Guid, ProductSearchDto, CreateUpdateProductDto>,
+        IProductAppService  
     {
         public ProductAppService(IRepository<Product, Guid> repository)
             : base(repository)
@@ -62,9 +62,19 @@ namespace Argus.WMS.MasterData
             return ObjectMapper.Map<Product, ProductDto>(product);
         }
 
-        public override async Task<PagedResultDto<ProductDto>> GetListAsync(PagedAndSortedResultRequestDto input)
+        public override async Task<PagedResultDto<ProductDto>> GetListAsync(ProductSearchDto input)
         {
             var queryable = await Repository.GetQueryableAsync();
+
+            if (!string.IsNullOrWhiteSpace(input.ProductCode))
+            {
+                queryable = queryable.Where(x => x.Code == input.ProductCode);
+            }
+
+            if (!string.IsNullOrWhiteSpace(input.ProductName))
+            {
+                queryable = queryable.Where(x => x.Name.Contains(input.ProductName));
+            }
 
             var totalCount = await AsyncExecuter.CountAsync(queryable);
 
