@@ -1,6 +1,6 @@
 using Argus.WMS.Inbound;
 using Argus.WMS.Inventorys;
-using Argus.WMS.MasterData.Warehouses;
+using Argus.WMS.MasterData.Locations;
 using System;
 using System.Collections.Generic;
 using Volo.Abp.Domain.Entities.Auditing;

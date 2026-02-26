@@ -1,6 +1,6 @@
 using System;
-using Argus.WMS.MasterData.Warehouses;
-using Argus.WMS.MasterData.Warehouses.Dtos;
+using Argus.WMS.MasterData.Locations;
+using Argus.WMS.MasterData.Locations.Dtos;
 using Riok.Mapperly.Abstractions;
 using Volo.Abp.Mapperly;
 

@@ -1,10 +1,10 @@
 using System;
 using System.Threading.Tasks;
-using Argus.WMS.MasterData.Warehouses.Dtos;
+using Argus.WMS.MasterData.Zones.Dtos;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 
-namespace Argus.WMS.MasterData.Warehouses
+namespace Argus.WMS.MasterData.Zones
 {
     public interface IZoneAppService : IApplicationService
     {

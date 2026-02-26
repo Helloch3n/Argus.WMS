@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Argus.WMS.MasterData.Locations.Dtos;
 
 namespace Argus.WMS.MasterData.Warehouses.Dtos
 {

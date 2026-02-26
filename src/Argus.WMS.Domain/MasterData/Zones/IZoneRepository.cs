@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories;
 
-namespace Argus.WMS.MasterData.Warehouses
+namespace Argus.WMS.MasterData.Zones
 {
     public interface IZoneRepository : IRepository<Zone, Guid>
     {

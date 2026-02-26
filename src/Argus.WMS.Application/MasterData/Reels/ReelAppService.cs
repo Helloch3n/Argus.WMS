@@ -2,12 +2,12 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Argus.WMS.MasterData.Reels.Dtos;
-using Argus.WMS.MasterData.Warehouses;
 using Argus.WMS.Mappers;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using Argus.WMS.MasterData.Locations;
 
 namespace Argus.WMS.MasterData.Reels
 {

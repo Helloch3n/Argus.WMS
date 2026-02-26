@@ -1,4 +1,5 @@
 using Argus.WMS.MasterData;
+using Argus.WMS.MasterData.Locations;
 using Argus.WMS.MasterData.Reels;
 using Argus.WMS.MasterData.Warehouses;
 using System;

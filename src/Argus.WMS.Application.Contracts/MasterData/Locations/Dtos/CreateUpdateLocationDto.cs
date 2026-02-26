@@ -1,6 +1,7 @@
 using System;
+using Argus.WMS.MasterData.Warehouses;
 
-namespace Argus.WMS.MasterData.Warehouses.Dtos
+namespace Argus.WMS.MasterData.Locations.Dtos
 {
     public class CreateUpdateLocationDto
     {

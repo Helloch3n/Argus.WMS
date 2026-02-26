@@ -1,3 +1,5 @@
+using Argus.WMS.MasterData.Warehouses;
+using Argus.WMS.MasterData.Zones;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -5,7 +7,7 @@ using Volo.Abp;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Domain.Services;
 
-namespace Argus.WMS.MasterData.Warehouses
+namespace Argus.WMS.MasterData.Locations
 {
     public class LocationManager : DomainService
     {
@@ -127,7 +129,7 @@ namespace Argus.WMS.MasterData.Warehouses
                 }
             }
 
-            await _locationRepository.InsertManyAsync(locations, autoSave: true);
+            await _locationRepository.InsertManyAsync(locations);
             return locations;
         }
     }

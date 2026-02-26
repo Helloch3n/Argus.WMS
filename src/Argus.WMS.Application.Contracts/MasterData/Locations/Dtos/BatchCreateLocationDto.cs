@@ -1,6 +1,6 @@
 using System;
 
-namespace Argus.WMS.MasterData.Warehouses.Dtos
+namespace Argus.WMS.MasterData.Locations.Dtos
 {
     public class BatchCreateLocationDto
     {

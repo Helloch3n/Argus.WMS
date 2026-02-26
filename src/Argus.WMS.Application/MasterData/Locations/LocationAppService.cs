@@ -1,12 +1,12 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Argus.WMS.MasterData.Warehouses.Dtos;
+using Argus.WMS.MasterData.Locations.Dtos;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 
-namespace Argus.WMS.MasterData.Warehouses
+namespace Argus.WMS.MasterData.Locations
 {
     public class LocationAppService : ApplicationService, ILocationAppService
     {
@@ -81,14 +81,17 @@ namespace Argus.WMS.MasterData.Warehouses
             await _locationRepository.DeleteAsync(id);
         }
 
-        public async Task BatchCreateAsync(BatchCreateLocationDto input)
+        public async Task<ListResultDto<LocationDto>> BatchCreateAsync(BatchCreateLocationDto input)
         {
-            await _locationManager.BatchCreateAsync(
+            var entities = await _locationManager.BatchCreateAsync(
                 input.WarehouseId,
                 input.ZoneId,
                 input.AislePrefix,
                 input.RackCount,
                 input.LevelCount);
+
+            var items = entities.Select(ObjectMapper.Map<Location, LocationDto>).ToList();
+            return new ListResultDto<LocationDto>(items);
         }
     }
 }

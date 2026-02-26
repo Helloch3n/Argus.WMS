@@ -1,7 +1,8 @@
+using Argus.WMS.MasterData.Warehouses;
 using System;
 using Volo.Abp.Domain.Entities.Auditing;
 
-namespace Argus.WMS.MasterData.Warehouses
+namespace Argus.WMS.MasterData.Zones
 {
     public class Zone : FullAuditedAggregateRoot<Guid>
     {
@@ -15,7 +16,7 @@ namespace Argus.WMS.MasterData.Warehouses
         {
         }
 
-        public Zone(
+        internal Zone(
             Guid id,
             Guid warehouseId,
             string code,

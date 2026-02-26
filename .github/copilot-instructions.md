@@ -21,6 +21,7 @@
     - *错误示例*: 在 `PutAwayTask` (上架任务) 中定义 `public Location TargetLocation { get; set; }`。
     - *正确示例*: 在 `PutAwayTask` (上架任务) 中定义 `public Guid TargetLocationId { get; set; }`。
   - **禁止跨域逻辑**: 不要将 A 上下文的 Repository 注入到 B 上下文的 Domain Service 中。请使用 `IntegrationEvents` (集成事件) 或 `AppService` 接口进行交互。
+  - **优先收敛命名空间边界**: 在进行其他 DDD 优化之前，首先收敛命名空间边界。
 
   ## 3. 后端开发规范 (.NET/ABP)
 

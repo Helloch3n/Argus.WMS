@@ -1,10 +1,11 @@
+using Argus.WMS.MasterData.Warehouses;
 using System;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Domain.Services;
 
-namespace Argus.WMS.MasterData.Warehouses
+namespace Argus.WMS.MasterData.Zones
 {
     public class ZoneManager : DomainService
     {
@@ -25,7 +26,12 @@ namespace Argus.WMS.MasterData.Warehouses
             string name,
             ZoneType zoneType)
         {
-            await _warehouseRepository.GetAsync(warehouseId);
+            var warehouse = await _warehouseRepository.GetAsync(warehouseId);
+            if (warehouse == null)
+            {
+                throw new BusinessException("WMS:WarehouseNotFound")
+                    .WithData("WarehouseId", warehouseId);
+            }
 
             var existing = await _zoneRepository.GetByCodeAsync(code);
             if (existing != null && existing.WarehouseId == warehouseId)

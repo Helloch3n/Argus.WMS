@@ -1,8 +1,9 @@
+using Argus.WMS.MasterData.Warehouses;
 using System;
 using System.ComponentModel.DataAnnotations;
 using Volo.Abp.Domain.Entities.Auditing;
 
-namespace Argus.WMS.MasterData.Warehouses
+namespace Argus.WMS.MasterData.Locations
 {
     public class Location : FullAuditedAggregateRoot<Guid>
     {

@@ -1,7 +1,8 @@
 using System;
+using Argus.WMS.MasterData.Warehouses;
 using Volo.Abp.Application.Dtos;
 
-namespace Argus.WMS.MasterData.Warehouses.Dtos
+namespace Argus.WMS.MasterData.Zones.Dtos
 {
     public class ZoneDto : AuditedEntityDto<Guid>
     {

@@ -15,6 +15,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="MasterData\Locations\Dtos\BatchCreateLocationDto.cs" />
+    <Compile Include="MasterData\Locations\Dtos\CreateUpdateLocationDto.cs" />
+    <Compile Include="MasterData\Locations\Dtos\LocationDto.cs" />
+    <Compile Include="MasterData\Locations\ILocationAppService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Argus.WMS.Domain.Shared\Argus.WMS.Domain.Shared.csproj" />
   </ItemGroup>
   

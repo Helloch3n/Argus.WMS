@@ -1,4 +1,4 @@
-using Argus.WMS.MasterData.Warehouses;
+using Argus.WMS.MasterData.Zones;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Volo.Abp.EntityFrameworkCore.Modeling;

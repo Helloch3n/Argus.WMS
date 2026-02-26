@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Argus.WMS.MasterData.Locations;
 using Argus.WMS.MasterData.Reels;
 using Argus.WMS.MasterData.Warehouses;
 using Volo.Abp;

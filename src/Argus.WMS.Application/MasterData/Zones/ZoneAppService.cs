@@ -1,13 +1,14 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Argus.WMS.MasterData.Warehouses.Dtos;
+using Argus.WMS.MasterData.Locations;
+using Argus.WMS.MasterData.Zones.Dtos;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 
-namespace Argus.WMS.MasterData.Warehouses
+namespace Argus.WMS.MasterData.Zones
 {
     public class ZoneAppService : ApplicationService, IZoneAppService
     {

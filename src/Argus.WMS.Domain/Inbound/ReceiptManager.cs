@@ -1,7 +1,7 @@
 using Argus.WMS.BillNumbers;
 using Argus.WMS.Inventorys;
+using Argus.WMS.MasterData.Locations;
 using Argus.WMS.MasterData.Reels;
-using Argus.WMS.MasterData.Warehouses;
 using System;
 using System.Linq;
 using System.Threading.Tasks;

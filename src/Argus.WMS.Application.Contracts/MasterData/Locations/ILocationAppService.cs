@@ -1,10 +1,10 @@
 using System;
 using System.Threading.Tasks;
-using Argus.WMS.MasterData.Warehouses.Dtos;
+using Argus.WMS.MasterData.Locations.Dtos;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 
-namespace Argus.WMS.MasterData.Warehouses
+namespace Argus.WMS.MasterData.Locations
 {
     public interface ILocationAppService : IApplicationService
     {
@@ -13,6 +13,6 @@ namespace Argus.WMS.MasterData.Warehouses
         Task<LocationDto> CreateAsync(CreateUpdateLocationDto input);
         Task<LocationDto> UpdateAsync(Guid id, CreateUpdateLocationDto input);
         Task DeleteAsync(Guid id);
-        Task BatchCreateAsync(BatchCreateLocationDto input);
+        Task<ListResultDto<LocationDto>> BatchCreateAsync(BatchCreateLocationDto input);
     }
 }
