@@ -27,11 +27,13 @@ namespace Argus.WMS.MasterData.Locations
             return ObjectMapper.Map<Location, LocationDto>(entity);
         }
 
-        public async Task<ListResultDto<LocationDto>> GetListAsync()
+        public async Task<PagedResultDto<LocationDto>> GetListAsync(PagedAndSortedResultRequestDto input)
         {
-            var entities = await _locationRepository.GetListAsync();
+            var totalCount = await _locationRepository.GetCountAsync();
+            var sorting = string.IsNullOrWhiteSpace(input.Sorting) ? "CreationTime DESC" : input.Sorting;
+            var entities = await _locationRepository.GetPagedListAsync(input.SkipCount, input.MaxResultCount, sorting);
             var items = entities.Select(ObjectMapper.Map<Location, LocationDto>).ToList();
-            return new ListResultDto<LocationDto>(items);
+            return new PagedResultDto<LocationDto>(totalCount, items);
         }
 
         public async Task<LocationDto> CreateAsync(CreateUpdateLocationDto input)

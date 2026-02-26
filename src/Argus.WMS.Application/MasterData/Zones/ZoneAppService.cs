@@ -32,11 +32,13 @@ namespace Argus.WMS.MasterData.Zones
             return ObjectMapper.Map<Zone, ZoneDto>(entity);
         }
 
-        public async Task<ListResultDto<ZoneDto>> GetListAsync()
+        public async Task<PagedResultDto<ZoneDto>> GetListAsync(PagedAndSortedResultRequestDto input)
         {
-            var entities = await _zoneRepository.GetListAsync();
+            var totalCount = await _zoneRepository.GetCountAsync();
+            var sorting = string.IsNullOrWhiteSpace(input.Sorting) ? "CreationTime DESC" : input.Sorting;
+            var entities = await _zoneRepository.GetPagedListAsync(input.SkipCount, input.MaxResultCount, sorting);
             var items = entities.Select(ObjectMapper.Map<Zone, ZoneDto>).ToList();
-            return new ListResultDto<ZoneDto>(items);
+            return new PagedResultDto<ZoneDto>(totalCount, items);
         }
 
         public async Task<ZoneDto> CreateAsync(CreateUpdateZoneDto input)

@@ -9,7 +9,7 @@ namespace Argus.WMS.MasterData.Locations
     public interface ILocationAppService : IApplicationService
     {
         Task<LocationDto> GetAsync(Guid id);
-        Task<ListResultDto<LocationDto>> GetListAsync();
+        Task<PagedResultDto<LocationDto>> GetListAsync(PagedAndSortedResultRequestDto input);
         Task<LocationDto> CreateAsync(CreateUpdateLocationDto input);
         Task<LocationDto> UpdateAsync(Guid id, CreateUpdateLocationDto input);
         Task DeleteAsync(Guid id);

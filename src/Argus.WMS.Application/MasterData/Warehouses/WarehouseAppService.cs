@@ -61,11 +61,13 @@ namespace Argus.WMS.MasterData.Warehouses
             };
         }
 
-        public async Task<ListResultDto<WarehouseDto>> GetListAsync()
+        public async Task<PagedResultDto<WarehouseDto>> GetListAsync(PagedAndSortedResultRequestDto input)
         {
-            var entities = await _warehouseRepository.GetListAsync();
+            var totalCount = await _warehouseRepository.GetCountAsync();
+            var sorting = string.IsNullOrWhiteSpace(input.Sorting) ? "CreationTime DESC" : input.Sorting;
+            var entities = await _warehouseRepository.GetPagedListAsync(input.SkipCount, input.MaxResultCount, sorting);
             var items = entities.Select(ObjectMapper.Map<Warehouse, WarehouseDto>).ToList();
-            return new ListResultDto<WarehouseDto>(items);
+            return new PagedResultDto<WarehouseDto>(totalCount, items);
         }
 
         public async Task<WarehouseDto> CreateAsync(CreateUpdateWarehouseDto input)

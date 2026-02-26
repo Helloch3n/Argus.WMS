@@ -9,7 +9,7 @@ namespace Argus.WMS.MasterData.Zones
     public interface IZoneAppService : IApplicationService
     {
         Task<ZoneDto> GetAsync(Guid id);
-        Task<ListResultDto<ZoneDto>> GetListAsync();
+        Task<PagedResultDto<ZoneDto>> GetListAsync(PagedAndSortedResultRequestDto input);
         Task<ZoneDto> CreateAsync(CreateUpdateZoneDto input);
         Task<ZoneDto> UpdateAsync(Guid id, CreateUpdateZoneDto input);
         Task DeleteAsync(Guid id);
