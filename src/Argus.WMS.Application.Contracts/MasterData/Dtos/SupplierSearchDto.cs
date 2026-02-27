@@ -4,7 +4,7 @@ namespace Argus.WMS.MasterData.Dtos
 {
     public class SupplierSearchDto : PagedAndSortedResultRequestDto
     {
-        public string SupplierCode { get; set; }
-        public string SupplierName { get; set; }
+        public string? SupplierCode { get; set; }
+        public string? SupplierName { get; set; }
     }
 }

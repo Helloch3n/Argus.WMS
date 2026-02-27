@@ -12,7 +12,7 @@ using Argus.WMS.MasterData.Locations;
 namespace Argus.WMS.MasterData.Reels
 {
     public class ReelAppService :
-        CrudAppService<Reel, ReelDto, Guid, PagedAndSortedResultRequestDto, CreateUpdateReelDto>,
+        CrudAppService<Reel, ReelDto, Guid, ReelSearchDto, CreateUpdateReelDto>,
         IReelAppService
     {
         private readonly IRepository<Location, Guid> _locationRepository;
@@ -112,17 +112,32 @@ namespace Argus.WMS.MasterData.Reels
             return _reelMapper.Map(updatedEntity);
         }
 
+        public override async Task<PagedResultDto<ReelDto>> GetListAsync(ReelSearchDto input)
+        {
+            var queryable = await Repository.WithDetailsAsync(x => x.CurrentLocation);
+
+            if (!string.IsNullOrWhiteSpace(input.ReelCode))
+            {
+                queryable = queryable.Where(x => x.ReelNo == input.ReelCode);
+            }
+
+            var totalCount = await AsyncExecuter.CountAsync(queryable);
+
+            var items = await AsyncExecuter.ToListAsync(
+                queryable
+                    .OrderBy(x => x.ReelNo)
+                    .PageBy(input.SkipCount, input.MaxResultCount));
+
+            var dtos = items.Select(x => _reelMapper.Map(x)).ToList();
+
+            return new PagedResultDto<ReelDto>(totalCount, dtos);
+        }
+
         protected override async Task<Reel> GetEntityByIdAsync(Guid id)
         {
             var query = await Repository.WithDetailsAsync(x => x.CurrentLocation);
             var entity = query.FirstOrDefault(x => x.Id == id);
             return entity;
-        }
-
-        protected override async Task<IQueryable<Reel>> CreateFilteredQueryAsync(
-            PagedAndSortedResultRequestDto input)
-        {
-            return await Repository.WithDetailsAsync(x => x.CurrentLocation);
         }
 
         protected override ReelDto MapToGetOutputDto(Reel entity)

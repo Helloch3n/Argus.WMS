@@ -7,8 +7,9 @@ using Volo.Abp.Application.Services;
 namespace Argus.WMS.MasterData.Reels
 {
     public interface IReelAppService :
-        ICrudAppService<ReelDto, Guid, PagedAndSortedResultRequestDto, CreateUpdateReelDto>
+        ICrudAppService<ReelDto, Guid, ReelSearchDto, CreateUpdateReelDto>
     {
         Task UpdateLocationAsync(Guid id, Guid newLocationId);
+        Task<PagedResultDto<ReelDto>> GetListAsync(ReelSearchDto input);
     }
 }
