@@ -24,10 +24,6 @@ namespace Argus.WMS.Inbound
             return await queryable
                 .Include(x => x.Details)
                     .ThenInclude(x => x.Reel)
-                        .ThenInclude(r => r.CurrentLocation)
-                .Include(x => x.Details)
-                    .ThenInclude(x => x.Reel)
-                        .ThenInclude(r => r.Inventorys)
                 .Include(x => x.Details)
                     .ThenInclude(x => x.Product)
                 .FirstOrDefaultAsync(x => x.Id == id);

@@ -5,6 +5,7 @@ using Argus.WMS.Application.Contracts.Inventorys;
 using Argus.WMS.Application.Contracts.Inventorys.Dtos;
 using Argus.WMS.Application.Mappers;
 using Argus.WMS.Inventorys;
+using Argus.WMS.MasterData.Locations;
 using Argus.WMS.MasterData.Reels;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
@@ -18,23 +19,25 @@ namespace Argus.WMS.Application.Inventorys
         private readonly InventoryApplicationMappers _inventoryMapper;
         private readonly InventoryManager _inventoryManager;
         private readonly IRepository<Reel, Guid> _reelRepository;
+        private readonly IRepository<Location, Guid> _locationRepository;
 
         public InventoryAppService(
             IRepository<Inventory, Guid> inventoryRepository,
             InventoryApplicationMappers inventoryMapper,
             InventoryManager inventoryManager,
-            IRepository<Reel, Guid> reelRepository)
+            IRepository<Reel, Guid> reelRepository,
+            IRepository<Location, Guid> locationRepository)
         {
             _inventoryRepository = inventoryRepository;
             _inventoryMapper = inventoryMapper;
             _inventoryManager = inventoryManager;
             _reelRepository = reelRepository;
+            _locationRepository = locationRepository;
         }
 
         public async Task<PagedResultDto<InventoryDto>> GetListAsync(InventorySearchDto input)
         {
-            var query = await _inventoryRepository.WithDetailsAsync(x => x.Reel,
-                x => x.Reel.CurrentLocation, x => x.Product);
+            var query = await _inventoryRepository.WithDetailsAsync(x => x.Reel, x => x.Product);
 
             if (!string.IsNullOrWhiteSpace(input.ReelNo))
             {
@@ -61,6 +64,29 @@ namespace Argus.WMS.Application.Inventorys
             var items = await AsyncExecuter.ToListAsync(query);
 
             var result = items.Select(_inventoryMapper.Map).ToList();
+
+            var locationIds = items
+                .Where(x => x.Reel?.CurrentLocationId != null)
+                .Select(x => x.Reel.CurrentLocationId!.Value)
+                .Distinct()
+                .ToList();
+
+            if (locationIds.Count > 0)
+            {
+                var locationQuery = await _locationRepository.GetQueryableAsync();
+                var locations = await AsyncExecuter.ToListAsync(locationQuery.Where(x => locationIds.Contains(x.Id)));
+                var locationMap = locations.ToDictionary(x => x.Id, x => x.Code);
+
+                foreach (var dto in result)
+                {
+                    var currentLocationId = items.FirstOrDefault(x => x.Id == dto.Id)?.Reel?.CurrentLocationId;
+                    if (currentLocationId.HasValue && locationMap.TryGetValue(currentLocationId.Value, out var code))
+                    {
+                        dto.LocationCode = code;
+                    }
+                }
+            }
+
             return new PagedResultDto<InventoryDto>(totalCount, result);
         }
 

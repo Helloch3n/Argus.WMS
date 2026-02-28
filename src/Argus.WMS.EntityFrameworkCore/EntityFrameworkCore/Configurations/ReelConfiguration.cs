@@ -1,4 +1,5 @@
 using Argus.WMS.MasterData.Reels;
+using Argus.WMS.MasterData.Locations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Volo.Abp.EntityFrameworkCore.Modeling;
@@ -21,11 +22,11 @@ namespace Argus.WMS.EntityFrameworkCore.Configurations
                 .IsRequired()
                 .HasMaxLength(200);
 
+            builder.Property(x => x.Size)
+                .HasMaxLength(100);
+
             builder.Property(x => x.SelfWeight)
                 .HasPrecision(18, 4);
-
-            builder.Property(x => x.MaxWeight)
-                .HasPrecision(18, 2);
 
             builder.Property(x => x.Status)
                 .HasConversion<int>();
@@ -36,7 +37,7 @@ namespace Argus.WMS.EntityFrameworkCore.Configurations
             builder.HasIndex(x => x.ReelNo)
                 .IsUnique();
 
-            builder.HasOne(x => x.CurrentLocation)
+            builder.HasOne<Location>()
                 .WithMany()
                 .HasForeignKey(x => x.CurrentLocationId);
         }

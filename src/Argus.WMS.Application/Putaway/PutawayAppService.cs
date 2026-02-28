@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Argus.WMS.Inventorys;
+using Argus.WMS.MasterData.Locations;
 using Argus.WMS.MasterData.Reels;
 using Argus.WMS.MasterData.Reels.Dtos;
 using Argus.WMS.Putaway.Dtos;
@@ -18,15 +20,21 @@ namespace Argus.WMS.Putaway
     {
         private readonly PutawayManager _putawayManager;
         private readonly IReelRepository _reelRepository;
+        private readonly IRepository<Inventory, Guid> _inventoryRepository;
+        private readonly IRepository<Location, Guid> _locationRepository;
 
         public PutawayAppService(
             PutawayManager putawayManager,
             IReelRepository reelRepository,
+            IRepository<Inventory, Guid> inventoryRepository,
+            IRepository<Location, Guid> locationRepository,
             IRepository<PutawayTask, Guid> putawayTaskRepository)
             : base(putawayTaskRepository)
         {
             _putawayManager = putawayManager;
             _reelRepository = reelRepository;
+            _inventoryRepository = inventoryRepository;
+            _locationRepository = locationRepository;
         }
 
         public override async Task<PutawayTaskDto> CreateAsync(CreatePutawayTaskInput input)
@@ -79,7 +87,26 @@ namespace Argus.WMS.Putaway
                 input.SkipCount,
                 input.MaxResultCount);
 
-            var dtos = reels.Select(MapPutawayReel).ToList();
+            var reelIds = reels.Select(x => x.Id).ToList();
+
+            var inventoryQuery = await _inventoryRepository.WithDetailsAsync(x => x.Product);
+            var inventories = await AsyncExecuter.ToListAsync(inventoryQuery.Where(x => reelIds.Contains(x.ReelId)));
+
+            var locationIds = reels
+                .Where(x => x.CurrentLocationId.HasValue)
+                .Select(x => x.CurrentLocationId!.Value)
+                .Distinct()
+                .ToList();
+
+            var locationMap = new Dictionary<Guid, string>();
+            if (locationIds.Count > 0)
+            {
+                var locationQuery = await _locationRepository.GetQueryableAsync();
+                var locations = await AsyncExecuter.ToListAsync(locationQuery.Where(x => locationIds.Contains(x.Id)));
+                locationMap = locations.ToDictionary(x => x.Id, x => x.Code);
+            }
+
+            var dtos = reels.Select(x => MapPutawayReel(x, inventories, locationMap)).ToList();
 
             return new PagedResultDto<PutawayReelDto>(totalCount, dtos);
         }
@@ -98,9 +125,10 @@ namespace Argus.WMS.Putaway
             };
         }
 
-        private static PutawayReelDto MapPutawayReel(Reel reel)
+        private static PutawayReelDto MapPutawayReel(Reel reel, List<Inventory> inventories, Dictionary<Guid, string> locationMap)
         {
-            var items = reel.Inventorys?
+            var items = inventories
+                .Where(x => x.ReelId == reel.Id)
                 .Select(x => new PutawayReelItemDto
                 {
                     ProductCode = x.Product?.Code,
@@ -130,7 +158,9 @@ namespace Argus.WMS.Putaway
             {
                 Id = reel.Id,
                 ReelNo = reel.ReelNo,
-                LocationCode = reel.CurrentLocation?.Code,
+                LocationCode = reel.CurrentLocationId.HasValue && locationMap.TryGetValue(reel.CurrentLocationId.Value, out var code)
+                    ? code
+                    : null,
                 ReelStatus = reel.Status,
                 IsLocked = reel.IsLocked,
                 Items = items,

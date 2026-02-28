@@ -1,8 +1,4 @@
-using Argus.WMS.Inbound;
-using Argus.WMS.Inventorys;
-using Argus.WMS.MasterData.Locations;
 using System;
-using System.Collections.Generic;
 using Volo.Abp.Domain.Entities.Auditing;
 
 namespace Argus.WMS.MasterData.Reels
@@ -11,35 +7,29 @@ namespace Argus.WMS.MasterData.Reels
     {
         public string ReelNo { get; private set; }
         public string Name { get; private set; }
-        public ReelType Type { get; private set; }
+        public string Size { get; private set; }
         public decimal SelfWeight { get; private set; }
-        public decimal MaxWeight { get; private set; }
         public ReelStatus Status { get; private set; }
         public bool IsLocked { get; private set; }
         public Guid? CurrentLocationId { get; private set; }
-        public Location CurrentLocation { get; private set; }
-        private readonly List<Inventory> _inventorys = new();
-        public IReadOnlyCollection<Inventory> Inventorys => _inventorys;
 
         protected Reel()
         {
         }
 
-        public Reel(
+        internal Reel(
             Guid id,
             string reelNo,
             string name,
-            ReelType type,
+            string size,
             decimal selfWeight,
-            decimal maxWeight,
             ReelStatus status,
             Guid? currentLocationId) : base(id)
         {
             ReelNo = reelNo;
             Name = name;
-            Type = type;
+            Size = size;
             SelfWeight = selfWeight;
-            MaxWeight = maxWeight;
             Status = status;
             CurrentLocationId = currentLocationId;
             IsLocked = false;
@@ -73,15 +63,13 @@ namespace Argus.WMS.MasterData.Reels
         public void Update(
             string reelNo,
             string name,
-            ReelType type,
-            decimal selfWeight,
-            decimal maxWeight)
+            string size,
+            decimal selfWeight)
         {
             ReelNo = reelNo;
             Name = name;
-            Type = type;
+            Size = size;
             SelfWeight = selfWeight;
-            MaxWeight = maxWeight;
         }
     }
 }

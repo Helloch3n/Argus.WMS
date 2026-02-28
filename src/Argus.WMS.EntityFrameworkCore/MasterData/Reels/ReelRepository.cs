@@ -1,4 +1,5 @@
 using Argus.WMS.EntityFrameworkCore;
+using Argus.WMS.MasterData.Locations;
 using Argus.WMS.MasterData.Warehouses;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -28,23 +29,24 @@ namespace Argus.WMS.MasterData.Reels
             int maxResultCount)
         {
             var queryable = await GetQueryableAsync();
+            var dbContext = await GetDbContextAsync();
 
-            var query = queryable
-                .Include(x => x.CurrentLocation)
-                .Include(x => x.Inventorys)
-                    .ThenInclude(i => i.Product)
-                .Where(x => x.Status == ReelStatus.Occupied)
-                .Where(x => !x.IsLocked)
-                .Where(x => x.CurrentLocation.Type == LocationType.Dock);
+            var query =
+                from reel in queryable
+                join location in dbContext.Locations on reel.CurrentLocationId equals location.Id
+                where reel.Status == ReelStatus.Occupied
+                where !reel.IsLocked
+                where location.Type == LocationType.Dock
+                select new { reel, location };
 
             if (!string.IsNullOrWhiteSpace(filter))
             {
-                query = query.Where(x => x.ReelNo.Contains(filter));
+                query = query.Where(x => x.reel.ReelNo.Contains(filter));
             }
 
             if (warehouseId.HasValue)
             {
-                query = query.Where(x => x.CurrentLocation.WarehouseId == warehouseId.Value);
+                query = query.Where(x => x.location.WarehouseId == warehouseId.Value);
             }
 
             var sortingValue = string.IsNullOrWhiteSpace(sorting)
@@ -52,29 +54,34 @@ namespace Argus.WMS.MasterData.Reels
                 : sorting;
 
             return await query
-                .OrderBy(sortingValue)
+                .OrderBy($"reel.{sortingValue}")
                 .Skip(skipCount)
                 .Take(maxResultCount)
+                .Select(x => x.reel)
                 .ToListAsync();
         }
 
         public async Task<long> GetAvailableForPutawayCountAsync(string filter, Guid? warehouseId)
         {
             var queryable = await GetQueryableAsync();
+            var dbContext = await GetDbContextAsync();
 
-            var query = queryable
-                .Where(x => x.Status == ReelStatus.Occupied)
-                .Where(x => !x.IsLocked)
-                .Where(x => x.CurrentLocation.Type == LocationType.Dock);
+            var query =
+                from reel in queryable
+                join location in dbContext.Locations on reel.CurrentLocationId equals location.Id
+                where reel.Status == ReelStatus.Occupied
+                where !reel.IsLocked
+                where location.Type == LocationType.Dock
+                select new { reel, location };
 
             if (!string.IsNullOrWhiteSpace(filter))
             {
-                query = query.Where(x => x.ReelNo.Contains(filter));
+                query = query.Where(x => x.reel.ReelNo.Contains(filter));
             }
 
             if (warehouseId.HasValue)
             {
-                query = query.Where(x => x.CurrentLocation.WarehouseId == warehouseId.Value);
+                query = query.Where(x => x.location.WarehouseId == warehouseId.Value);
             }
 
             return await query.LongCountAsync();
@@ -83,9 +90,7 @@ namespace Argus.WMS.MasterData.Reels
         public async Task<Reel?> GetByReelNoWithLocationAsync(string reelNo)
         {
             var queryable = await GetQueryableAsync();
-            return await queryable
-                .Include(x => x.CurrentLocation)
-                .FirstOrDefaultAsync(x => x.ReelNo == reelNo);
+            return await queryable.FirstOrDefaultAsync(x => x.ReelNo == reelNo);
         }
     }
 }

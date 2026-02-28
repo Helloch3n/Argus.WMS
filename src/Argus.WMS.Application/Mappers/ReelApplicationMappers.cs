@@ -8,7 +8,6 @@ namespace Argus.WMS.Mappers;
 [Mapper]
 public partial class ReelApplicationMappers : MapperBase<Reel, ReelDto>
 {
-    [MapProperty(nameof(Reel.CurrentLocation.Code), nameof(ReelDto.CurrentLocationCode))]
     [MapProperty(nameof(Reel.IsLocked), nameof(ReelDto.IsLocked))]
     public override partial ReelDto Map(Reel source);
 

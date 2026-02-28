@@ -69,26 +69,30 @@ namespace Argus.WMS.Inbound
 
             #region Step 2: 隐式移库（载具位置变更 & 跨仓库调拨流水）
 
-            var queryReel = await _reelRepository.WithDetailsAsync(x => x.Inventorys);
-            var reel = await AsyncExecuter.FirstOrDefaultAsync(queryReel.Where(x => x.Id == detail.ReelId));
+            var reel = await _reelRepository.FirstOrDefaultAsync(x => x.Id == detail.ReelId);
             if (reel is null)
             {
                 throw new UserFriendlyException("托盘不存在");
             }
 
             var targetLocation = await _locationRepository.GetAsync(receiveInventoryArgs.LocationId);
+            Location? sourceLocation = null;
+
+            if (reel.CurrentLocationId.HasValue)
+            {
+                sourceLocation = await _locationRepository.FirstOrDefaultAsync(x => x.Id == reel.CurrentLocationId.Value);
+            }
 
             bool isWarehouseChanged = false;
-            if (reel.CurrentLocation != null && reel.CurrentLocation.WarehouseId != targetLocation.WarehouseId)
+            if (sourceLocation != null && sourceLocation.WarehouseId != targetLocation.WarehouseId)
             {
                 isWarehouseChanged = true;
             }
 
-            reel.SetLocation(targetLocation.Id);
-
             if (isWarehouseChanged)
             {
-                foreach (var o in reel.Inventorys)
+                var reelInventorys = await _inventoryRepository.GetListAsync(x => x.ReelId == reel.Id);
+                foreach (var o in reelInventorys)
                 {
                     var transferLog = new InventoryTransaction(
                         GuidGenerator.Create(),
@@ -99,20 +103,22 @@ namespace Argus.WMS.Inbound
                         o.ProductId,
                         o.Quantity,
                         o.Quantity,
-                        reel.CurrentLocation?.Id,
+                        sourceLocation?.Id,
                         targetLocation.Id,
-                        reel.CurrentLocation?.WarehouseId,
+                        sourceLocation?.WarehouseId,
                         targetLocation.WarehouseId,
                         o.SN,
                         o.BatchNo,
                         o.CraftVersion,
                         o.Status,
-                        $"入库自动纠偏：从 {reel.CurrentLocation?.WarehouseId} 移至 {targetLocation.WarehouseId}"
+                        $"入库自动纠偏：从 {sourceLocation?.WarehouseId} 移至 {targetLocation.WarehouseId}"
                     );
 
                     await _inventoryTransactionRepository.InsertAsync(transferLog);
                 }
             }
+
+            reel.SetLocation(targetLocation.Id);
 
             #endregion
 

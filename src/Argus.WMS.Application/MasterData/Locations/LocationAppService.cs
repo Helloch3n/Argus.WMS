@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Argus.WMS.MasterData.Locations.Dtos;
 using Argus.WMS.MasterData.Warehouses;
 using Argus.WMS.MasterData.Zones;
+using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
@@ -136,6 +137,16 @@ namespace Argus.WMS.MasterData.Locations
         public async Task DeleteAsync(Guid id)
         {
             await _locationRepository.DeleteAsync(id);
+        }
+
+        public async Task EnsureExistsAsync(Guid id)
+        {
+            var exists = await _locationRepository.AnyAsync(x => x.Id == id);
+            if (!exists)
+            {
+                throw new BusinessException("Reel:LocationNotFound")
+                    .WithData("LocationId", id);
+            }
         }
 
         public async Task<ListResultDto<LocationDto>> BatchCreateAsync(BatchCreateLocationDto input)

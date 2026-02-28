@@ -48,7 +48,13 @@ namespace Argus.WMS.Putaway
                 throw new UserFriendlyException("盘具正在操作中");
             }
 
-            if (reel.CurrentLocation is null || reel.CurrentLocation.Type != LocationType.Dock)
+            if (!reel.CurrentLocationId.HasValue)
+            {
+                throw new UserFriendlyException("盘具当前不在暂存区");
+            }
+
+            var currentLocation = await _locationRepository.FirstOrDefaultAsync(x => x.Id == reel.CurrentLocationId.Value);
+            if (currentLocation is null || currentLocation.Type != LocationType.Dock)
             {
                 throw new UserFriendlyException("盘具当前不在暂存区");
             }
@@ -60,7 +66,7 @@ namespace Argus.WMS.Putaway
                 GuidGenerator.Create(),
                 GuidGenerator.Create().ToString("N"),
                 reel.ReelNo,
-                reel.CurrentLocation.Code,
+                currentLocation.Code,
                 null,
                 null);
 
@@ -103,7 +109,13 @@ namespace Argus.WMS.Putaway
                 throw new UserFriendlyException("盘具正在操作中");
             }
 
-            if (reel.CurrentLocation is null || reel.CurrentLocation.Type != LocationType.Dock)
+            if (!reel.CurrentLocationId.HasValue)
+            {
+                throw new UserFriendlyException("盘具当前不在暂存区");
+            }
+
+            var currentLocation = await _locationRepository.FirstOrDefaultAsync(x => x.Id == reel.CurrentLocationId.Value);
+            if (currentLocation is null || currentLocation.Type != LocationType.Dock)
             {
                 throw new UserFriendlyException("盘具当前不在暂存区");
             }
@@ -130,7 +142,7 @@ namespace Argus.WMS.Putaway
                 GuidGenerator.Create(),
                 GuidGenerator.Create().ToString("N"),
                 reel.ReelNo,
-                reel.CurrentLocation.Code,
+                currentLocation.Code,
                 targetLocation?.Code,
                 null);
 

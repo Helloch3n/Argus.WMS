@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Argus.WMS.Application.Mappers;
 using Argus.WMS.Inventorys;
+using Argus.WMS.MasterData.Locations;
 using Argus.WMS.MasterData.Reels;
 using Argus.WMS.Outbound.Dtos;
 using Volo.Abp;
@@ -21,6 +22,7 @@ namespace Argus.WMS.Outbound
         private readonly IRepository<PickTask, Guid> _pickTaskRepository;
         private readonly IRepository<Inventory, Guid> _inventoryRepository;
         private readonly IRepository<Reel, Guid> _reelRepository;
+        private readonly IRepository<Location, Guid> _locationRepository;
         private readonly AllocationManager _allocationDomainService;
         private readonly OutboundOrderApplicationMappers _orderMapper;
         private readonly PickTaskApplicationMappers _pickTaskMapper;
@@ -31,6 +33,7 @@ namespace Argus.WMS.Outbound
             IRepository<PickTask, Guid> pickTaskRepository,
             IRepository<Inventory, Guid> inventoryRepository,
             IRepository<Reel, Guid> reelRepository,
+            IRepository<Location, Guid> locationRepository,
             AllocationManager allocationDomainService,
             OutboundOrderApplicationMappers orderMapper,
             PickTaskApplicationMappers pickTaskMapper,
@@ -41,6 +44,7 @@ namespace Argus.WMS.Outbound
             _pickTaskRepository = pickTaskRepository;
             _inventoryRepository = inventoryRepository;
             _reelRepository = reelRepository;
+            _locationRepository = locationRepository;
             _allocationDomainService = allocationDomainService;
             _orderMapper = orderMapper;
             _pickTaskMapper = pickTaskMapper;
@@ -101,12 +105,18 @@ namespace Argus.WMS.Outbound
 
                     foreach (var result in allocationResults)
                     {
-                        var reelQuery = await _reelRepository.WithDetailsAsync(x => x.CurrentLocation);
-                        var reel = await AsyncExecuter.FirstOrDefaultAsync(reelQuery.Where(x => x.Id == result.ReelId));
+                        var reel = await _reelRepository.FindAsync(result.ReelId);
 
                         if (reel is null)
                         {
                             throw new UserFriendlyException($"未找到盘具：{result.ReelId}");
+                        }
+
+                        string? locationCode = null;
+                        if (reel.CurrentLocationId.HasValue)
+                        {
+                            var location = await _locationRepository.FindAsync(reel.CurrentLocationId.Value);
+                            locationCode = location?.Code;
                         }
 
                         reel.Lock("Outbound");
@@ -118,7 +128,7 @@ namespace Argus.WMS.Outbound
                             item.Id,
                             result.InventoryId,
                             reel.ReelNo,
-                            reel.CurrentLocation?.Code,
+                            locationCode,
                             null);
 
                         await _pickTaskRepository.InsertAsync(task);

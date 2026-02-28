@@ -14,5 +14,6 @@ namespace Argus.WMS.MasterData.Locations
         Task<LocationDto> UpdateAsync(Guid id, CreateUpdateLocationDto input);
         Task DeleteAsync(Guid id);
         Task<ListResultDto<LocationDto>> BatchCreateAsync(BatchCreateLocationDto input);
+        Task EnsureExistsAsync(Guid id);
     }
 }

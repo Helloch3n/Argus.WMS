@@ -34,6 +34,28 @@ namespace Argus.WMS.MasterData.Warehouses
             var queryable = await GetQueryableAsync();
             return await queryable.Where(x => x.WarehouseId == warehouseId).ToListAsync();
         }
+
+        public async Task<string?> GetCodeByIdAsync(Guid id)
+        {
+            var queryable = await GetQueryableAsync();
+            return await queryable
+                .Where(x => x.Id == id)
+                .Select(x => x.Code)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<Dictionary<Guid, string>> GetCodeMapByIdsAsync(List<Guid> ids)
+        {
+            if (ids.Count == 0)
+            {
+                return new Dictionary<Guid, string>();
+            }
+
+            var queryable = await GetQueryableAsync();
+            return await queryable
+                .Where(x => ids.Contains(x.Id))
+                .ToDictionaryAsync(x => x.Id, x => x.Code);
+        }
     }
 }
 

@@ -10,7 +10,6 @@ namespace Argus.WMS.Application.Mappers
     {
         [MapProperty(nameof(Inventory.ProductId), nameof(InventoryDto.ProductId))]
         [MapProperty("Reel.ReelNo", nameof(InventoryDto.ReelNo))]
-        [MapProperty("Reel.CurrentLocation.Code", nameof(InventoryDto.LocationCode))]
         [MapProperty("Product.Name", nameof(InventoryDto.ProductName))]
         [MapProperty("Product.Code", nameof(InventoryDto.ProductCode))]
         [MapProperty(nameof(Inventory.Index), nameof(InventoryDto.LayerIndex))]
